@@ -11,6 +11,7 @@
     "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
+    "verbatimModuleSyntax": true,
 
     // Modules
     "module": "ESNext",
@@ -23,6 +24,13 @@
     "sourceMap": true,
     "noEmit": false,
     "outDir": "dist",
+
+    // Performance
+    "incremental": true,
+    "tsBuildInfoFile": ".tsbuildinfo",
+
+    // Project References
+    "composite": true,
 
     // JavaScript Support
     "allowJs": false,

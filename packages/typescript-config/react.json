@@ -11,6 +11,9 @@
 
     // React-specific
     "allowJs": true,
-    "noEmit": true
+    "noEmit": true,
+
+    // Override composite for apps (apps don't emit, so composite should be false)
+    "composite": false
   }
 }
