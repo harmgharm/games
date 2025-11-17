@@ -1,6 +1,6 @@
 # Gaming Platform - CLAUDE.md
 
-> **Note**: This file is not for commits/pushes by Claude. All git operations are handled manually by the developer.
+> **Note for Claude Code on the Web**: Claude should commit and push changes to feature branches during sessions to prevent work loss (cloud workspace is temporary). Developer reviews and merges changes on GitHub after the session.
 
 ## Project Overview
 
@@ -259,9 +259,10 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ## Development Workflow
 
 ### Branch Strategy
-- Manual git operations (no automated commits/pushes)
-- Conventional Commits format
-- Developer handles all version control
+- **Claude Code on Web**: Claude commits and pushes to feature branches (`claude/*` prefix) during sessions
+- **Developer**: Reviews changes on GitHub and handles final merge to main branch
+- **Conventional Commits**: All commits follow conventional commit format
+- **Session Branches**: Auto-generated feature branches (e.g., `claude/feature-name-sessionID`)
 
 ### CI/CD Pipeline (GitHub Actions)
 
@@ -641,7 +642,7 @@ src/
 
 ## Notes for Claude
 
-- **No Git Operations**: Do not make any commits or pushes
+- **Git Operations**: Commit and push changes to feature branches during web sessions (cloud workspace is temporary)
 - **Ask Questions**: When uncertain about architecture decisions
 - **Follow Patterns**: Maintain consistency with established patterns
 - **Type Safety**: Never use `any`, always prefer proper types
