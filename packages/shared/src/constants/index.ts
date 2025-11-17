@@ -22,7 +22,7 @@ export const DEFAULT_PAGE_SIZE = 20;
 export const MAX_PAGE_SIZE = 100;
 
 // Timeouts (in milliseconds)
-export const WS_HEARTBEAT_INTERVAL = 30000; // 30 seconds
+export const WS_HEARTBEAT_INTERVAL = 30_000; // 30 seconds
 export const WS_RECONNECT_DELAY = 2000; // 2 seconds
 export const WS_MAX_RECONNECT_ATTEMPTS = 5;
 

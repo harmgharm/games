@@ -56,10 +56,10 @@ export default tseslint.config(
         },
       ],
       '@typescript-eslint/consistent-type-imports': [
-        'error',
+        'warn',
         {
           prefer: 'type-imports',
-          fixStyle: 'inline-type-imports',
+          fixStyle: 'separate-type-imports',
         },
       ],
       '@typescript-eslint/no-explicit-any': 'error',
@@ -143,6 +143,17 @@ export default tseslint.config(
       'object-shorthand': 'error',
       'prefer-template': 'error',
       'prefer-arrow-callback': 'error',
+
+      // Code Quality - Complexity & Size (warnings, not blockers)
+      'max-params': ['warn', 3],
+      'max-lines': [
+        'warn',
+        {
+          max: 500,
+          skipBlankLines: true,
+          skipComments: true,
+        },
+      ],
     },
   },
 );

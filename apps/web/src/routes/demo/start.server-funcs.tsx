@@ -1,7 +1,8 @@
 import fs from 'node:fs'
-import { useCallback, useState } from 'react'
+
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { createServerFn } from '@tanstack/react-start'
+import { useCallback, useState } from 'react'
 
 /*
 const loggingMiddleware = createMiddleware().server(
@@ -19,7 +20,7 @@ const TODOS_FILE = 'todos.json'
 
 async function readTodos() {
   return JSON.parse(
-    await fs.promises.readFile(TODOS_FILE, 'utf-8').catch(() =>
+    await fs.promises.readFile(TODOS_FILE, 'utf8').catch(() =>
       JSON.stringify(
         [
           { id: 1, name: 'Get groceries' },
@@ -86,7 +87,7 @@ function Home() {
           <input
             type="text"
             value={todo}
-            onChange={(e) => setTodo(e.target.value)}
+            onChange={(e) => { setTodo(e.target.value); }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
                 submitTodo()

@@ -5,17 +5,17 @@
 /**
  * Type-safe object keys helper
  */
-export function keys<T extends object>(obj: T): Array<keyof T> {
-  return Object.keys(obj) as Array<keyof T>;
+export function keys<T extends object>(object: T): (keyof T)[] {
+  return Object.keys(object) as (keyof T)[];
 }
 
 /**
  * Type-safe object entries helper
  */
 export function entries<T extends object>(
-  obj: T,
-): Array<[keyof T, T[keyof T]]> {
-  return Object.entries(obj) as Array<[keyof T, T[keyof T]]>;
+  object: T,
+): [keyof T, T[keyof T]][] {
+  return Object.entries(object) as [keyof T, T[keyof T]][];
 }
 
 /**

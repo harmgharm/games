@@ -43,8 +43,8 @@ export interface ApiResponse<T> {
   };
 }
 
-export type ApiError = {
+export interface ApiError {
   code: string;
   message: string;
   details?: Record<string, unknown>;
-};
+}
