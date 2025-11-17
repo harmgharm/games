@@ -22,6 +22,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ### Current Stack
 
 #### Frontend
+
 - **Framework**: TanStack Start (React)
 - **State Management**:
   - TanStack Query (80% - server state)
@@ -32,6 +33,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 - **TypeScript**: Strict mode
 
 #### Backend
+
 - **Runtime**: Node.js
 - **Framework**: Fastify (vanilla, no framework wrapper)
 - **Database**: PostgreSQL
@@ -41,11 +43,13 @@ A modern gaming/social platform with real-time features including duels, chat, f
 - **Validation**: Zod
 
 #### Real-time
+
 - **Live Features**: Native WebSockets (duels, chat, matchmaking)
 - **Updates**: Server-Sent Events (SSE)
 - **No Socket.io** unless absolutely necessary
 
 #### Infrastructure
+
 - **Monorepo**: Turborepo + pnpm
 - **Environment**: t3-env
 - **Error Tracking**: Sentry
@@ -55,6 +59,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 - **Future**: AWS compute + Cloudflare CDN + video processing service
 
 #### API & Documentation
+
 - **Current**: REST API
 - **Future**: GraphQL (for mobile apps)
 - **Docs**: OpenAPI/Swagger
@@ -62,6 +67,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 - **Validation**: Zod schemas
 
 #### Developer Experience
+
 - **Testing**: Vitest (80% coverage), Playwright (E2E)
 - **Linting**: ESLint (strict configs)
 - **Formatting**: Prettier
@@ -69,6 +75,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 - **Commits**: Conventional Commits (manual handling)
 
 #### Authentication
+
 - **Tokens**: JWT
 - **OAuth**: Third-party providers (Google, Discord, etc.)
 - **Sessions**: Optional for web
@@ -76,6 +83,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ### Future Stack
 
 #### Planned Additions
+
 - **Feature Flags**: GrowthBook
 - **Component Library**: Storybook
 - **Analytics**: ClickHouse
@@ -85,6 +93,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 - **Orchestration**: Kubernetes (when scale demands it)
 
 #### Platform Expansion
+
 - Mobile apps (React Native or native)
 - Desktop apps (Tauri or Electron)
 - Microservices architecture
@@ -146,6 +155,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ```
 
 ### ESLint Standards
+
 - Airbnb or similar enterprise-grade base config
 - TypeScript ESLint strict rules
 - React hooks rules
@@ -154,6 +164,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 - Consistent naming conventions
 
 ### Testing Requirements
+
 - **Unit Tests**: 80% minimum coverage (Vitest)
 - **Integration Tests**: Critical paths
 - **E2E Tests**: User flows (Playwright)
@@ -161,6 +172,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 - **Mocking**: Minimal, prefer integration tests where possible
 
 ### Code Organization
+
 - **Barrel Exports**: Use index.ts for clean imports
 - **Colocation**: Keep related files together
 - **Feature-Based**: Organize by feature, not file type
@@ -177,9 +189,11 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ### Backend Architecture
 
 #### API Structure
+
 - **REST First**: OpenAPI-documented REST endpoints
 - **Versioning**: `/api/v1/` prefix
 - **Response Format**: Consistent JSON structure
+
 ```typescript
 {
   data: T | null,
@@ -189,6 +203,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ```
 
 #### Database
+
 - **Kysely**: Type-safe query builder
 - **Migrations**: Version-controlled, linear
 - **Transactions**: Use for multi-table operations
@@ -196,11 +211,13 @@ A modern gaming/social platform with real-time features including duels, chat, f
 - **Constraints**: Enforce data integrity at DB level
 
 #### Caching Strategy
+
 - **Redis**: Session data, frequently accessed data
 - **Cache Invalidation**: Event-driven with BullMQ
 - **TTL**: Sensible defaults, configurable per resource
 
 #### Background Jobs
+
 - **BullMQ**: For async tasks
 - **Job Types**:
   - Email/notifications
@@ -211,6 +228,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ### Frontend Architecture
 
 #### State Management
+
 - **Server State**: TanStack Query
   - Caching, refetching, optimistic updates
   - Automatic background sync
@@ -219,17 +237,20 @@ A modern gaming/social platform with real-time features including duels, chat, f
   - Ephemeral data (form drafts)
 
 #### Component Patterns
+
 - **Composition**: Small, reusable components
 - **Compound Components**: For complex UI (e.g., Card with Card.Header)
 - **Render Props & Hooks**: For logic reuse
 - **Error Boundaries**: Graceful error handling
 
 #### Forms
+
 - **TanStack Form**: Type-safe form management
 - **Zod Validation**: Shared schemas with backend
 - **Optimistic Updates**: Immediate UI feedback
 
 #### Styling
+
 - **Tailwind CSS**: Utility-first
 - **shadcn/ui**: Base component library
 - **Variants**: CVA (Class Variance Authority)
@@ -238,17 +259,20 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ### Real-time Architecture
 
 #### WebSocket Features
+
 - **Duels**: Live game state synchronization
 - **Chat**: Real-time messaging
 - **Matchmaking**: Live queue updates
 - **Friends**: Online status, presence
 
 #### SSE Features
+
 - **Notifications**: New messages, friend requests
 - **Updates**: Non-critical state changes
 - **Fallback**: When WebSocket not available
 
 #### Connection Management
+
 - **Reconnection**: Exponential backoff
 - **Heartbeat**: Keep connections alive
 - **State Sync**: On reconnect, sync missed events
@@ -259,6 +283,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ## Development Workflow
 
 ### Branch Strategy
+
 - **Claude Code on Web**: Claude commits and pushes to feature branches (`claude/*` prefix) during sessions
 - **Developer**: Reviews changes on GitHub and handles final merge to main branch
 - **Conventional Commits**: All commits follow conventional commit format
@@ -267,6 +292,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ### CI/CD Pipeline (GitHub Actions)
 
 #### On Pull Request
+
 1. **Lint**: ESLint + Prettier check
 2. **Type Check**: TypeScript compilation
 3. **Test**: Vitest unit + integration tests
@@ -275,17 +301,20 @@ A modern gaming/social platform with real-time features including duels, chat, f
 6. **Coverage**: Enforce 80% minimum
 
 #### On Merge to Main
+
 1. All PR checks
 2. **Docker Build**: Multi-stage builds
 3. **Deploy**: To staging environment
 4. **Smoke Tests**: Basic E2E validation
 
 #### On Release Tag
+
 1. **Deploy**: To production
 2. **Monitoring**: Sentry release tracking
 3. **Rollback**: Automatic on critical errors
 
 ### Environment Variables
+
 - **t3-env**: Type-safe environment validation
 - **Validation**: Fail fast on missing/invalid vars
 - **.env.example**: Document all required variables
@@ -294,6 +323,7 @@ A modern gaming/social platform with real-time features including duels, chat, f
 ### Docker Strategy
 
 #### Development
+
 ```yaml
 # docker-compose.yml
 services:
@@ -305,12 +335,14 @@ services:
 ```
 
 #### Production
+
 - **Multi-stage builds**: Minimize image size
 - **Layer caching**: Optimize build times
 - **Health checks**: Ensure container health
 - **Resource limits**: Prevent resource exhaustion
 
 #### Progression Path
+
 1. **Now**: Docker Compose (local dev)
 2. **Next**: Cloud-managed containers (AWS ECS / GCP Cloud Run)
 3. **Future**: Kubernetes (when horizontal scaling needed)
@@ -322,6 +354,7 @@ services:
 ### REST Conventions
 
 #### Endpoints
+
 ```
 GET    /api/v1/users/:id
 POST   /api/v1/users
@@ -340,6 +373,7 @@ POST   /api/v1/chat/conversations/:id/messages
 ```
 
 #### Status Codes
+
 - `200` - Success
 - `201` - Created
 - `204` - No Content
@@ -354,12 +388,14 @@ POST   /api/v1/chat/conversations/:id/messages
 - `503` - Service Unavailable
 
 #### Request/Response
+
 - **Content-Type**: `application/json`
 - **Validation**: Zod schemas
 - **Documentation**: OpenAPI 3.0+ spec
 - **Pagination**: Cursor-based for real-time data, offset for static
 
 ### GraphQL (Future)
+
 - **Mobile-first**: Optimize for mobile bandwidth
 - **Schema-first**: Define schema before implementation
 - **DataLoader**: Batch and cache database queries
@@ -370,6 +406,7 @@ POST   /api/v1/chat/conversations/:id/messages
 ## Security Considerations
 
 ### Authentication & Authorization
+
 - **JWT**: Short-lived access tokens (15min)
 - **Refresh Tokens**: Long-lived, HTTP-only cookies
 - **OAuth**: Google, Discord, GitHub providers
@@ -377,6 +414,7 @@ POST   /api/v1/chat/conversations/:id/messages
 - **Rate Limiting**: Protect against abuse
 
 ### Data Security
+
 - **Input Validation**: Zod on both client and server
 - **SQL Injection**: Kysely prevents via parameterized queries
 - **XSS**: React escaping + CSP headers
@@ -384,6 +422,7 @@ POST   /api/v1/chat/conversations/:id/messages
 - **Secrets**: Environment variables, never in code
 
 ### Infrastructure Security
+
 - **HTTPS**: Enforce in production
 - **CORS**: Strict origin policies
 - **Headers**: Security headers (Helmet.js)
@@ -394,6 +433,7 @@ POST   /api/v1/chat/conversations/:id/messages
 ## Performance Optimization
 
 ### Frontend
+
 - **Code Splitting**: Route-based lazy loading
 - **Image Optimization**: Next-gen formats, lazy loading
 - **Bundle Size**: Monitor and optimize
@@ -401,6 +441,7 @@ POST   /api/v1/chat/conversations/:id/messages
 - **CDN**: Static assets via Cloudflare
 
 ### Backend
+
 - **Database Indexes**: Strategic indexing
 - **Query Optimization**: Avoid N+1 queries
 - **Caching**: Redis for hot data
@@ -408,6 +449,7 @@ POST   /api/v1/chat/conversations/:id/messages
 - **Compression**: gzip/brotli responses
 
 ### Real-time
+
 - **Multiplexing**: Share connections where possible
 - **Binary Protocols**: For high-frequency data
 - **Throttling**: Limit update frequency
@@ -418,18 +460,21 @@ POST   /api/v1/chat/conversations/:id/messages
 ## Monitoring & Observability
 
 ### Error Tracking
+
 - **Sentry**: Frontend and backend errors
 - **Source Maps**: For production debugging
 - **Context**: User, session, request info
 - **Alerts**: Critical error notifications
 
 ### Future Monitoring
+
 - **Datadog**: APM, infrastructure monitoring
 - **PostHog**: Product analytics, feature flags
 - **ClickHouse**: Analytics warehouse
 - **Metrics**: Custom business metrics
 
 ### Logging
+
 - **Structured Logging**: JSON format
 - **Log Levels**: ERROR, WARN, INFO, DEBUG
 - **Correlation IDs**: Trace requests across services
@@ -440,6 +485,7 @@ POST   /api/v1/chat/conversations/:id/messages
 ## Database Schema Principles
 
 ### Design Guidelines
+
 - **Normalization**: 3NF minimum
 - **Denormalization**: Strategic, for performance
 - **UUIDs**: For distributed systems
@@ -448,6 +494,7 @@ POST   /api/v1/chat/conversations/:id/messages
 - **Enums**: Database enums or lookup tables
 
 ### Example Tables
+
 ```sql
 -- Users
 users (id, email, username, created_at, updated_at, deleted_at)
@@ -469,6 +516,7 @@ matchmaking_queue (id, user_id, game_type, elo, joined_at)
 ```
 
 ### Migrations
+
 - **Linear**: No branching migration history
 - **Reversible**: All migrations have down() method
 - **Idempotent**: Safe to run multiple times
@@ -479,18 +527,21 @@ matchmaking_queue (id, user_id, game_type, elo, joined_at)
 ## Documentation Standards
 
 ### Code Documentation
+
 - **JSDoc**: For public APIs and complex functions
 - **README**: Per package with setup instructions
 - **Examples**: Include usage examples
 - **Architecture Diagrams**: Mermaid for complex flows
 
 ### API Documentation
+
 - **OpenAPI**: Auto-generated from Zod schemas
 - **Swagger UI**: Interactive API explorer
 - **Examples**: Request/response examples
 - **Changelog**: API version changes
 
 ### Architecture Diagrams
+
 ```mermaid
 # Example: System Architecture
 graph TD
@@ -508,12 +559,14 @@ graph TD
 ## Deployment Strategy
 
 ### Environments
+
 - **Local**: Docker Compose
 - **Development**: Shared dev environment
 - **Staging**: Production mirror
 - **Production**: Multi-region (future)
 
 ### Cloud Strategy
+
 1. **Phase 1**: Cloud-agnostic (Nitro deployment)
 2. **Phase 2**: AWS ECS + RDS + ElastiCache
 3. **Phase 3**: Cloudflare CDN integration
@@ -521,6 +574,7 @@ graph TD
 5. **Phase 5**: Kubernetes (when needed)
 
 ### Scaling Plan
+
 - **Vertical**: Start with larger instances
 - **Horizontal**: Add replicas as traffic grows
 - **Database**: Read replicas for read-heavy operations
@@ -532,6 +586,7 @@ graph TD
 ## Key Features to Implement
 
 ### Core Features (MVP)
+
 1. **User Authentication**: Sign up, login, OAuth
 2. **User Profiles**: Avatar, bio, stats
 3. **Friends System**: Add, remove, block, online status
@@ -541,6 +596,7 @@ graph TD
 7. **Leaderboards**: Global and friend rankings
 
 ### Real-time Requirements
+
 - WebSocket connections for live features
 - SSE for notifications and updates
 - Presence system (online/offline/in-game)
@@ -549,6 +605,7 @@ graph TD
 - Matchmaking queue updates
 
 ### Future Features
+
 - Tournaments and leagues
 - Spectator mode
 - Video replays
@@ -562,24 +619,28 @@ graph TD
 ## Testing Strategy
 
 ### Unit Tests (Vitest)
+
 - **Coverage**: 80% minimum
 - **Focus**: Business logic, utilities, hooks
 - **Isolation**: Mock external dependencies
 - **Speed**: Fast feedback loop
 
 ### Integration Tests (Vitest)
+
 - **Database**: Test with real PostgreSQL (testcontainers)
 - **API**: Test endpoints with real dependencies
 - **Redis**: Test caching logic
 - **WebSocket**: Test real-time flows
 
 ### E2E Tests (Playwright)
+
 - **Critical Paths**: Login, matchmaking, duels, chat
 - **Cross-browser**: Chrome, Firefox, Safari
 - **Visual Regression**: Screenshot comparison
 - **Performance**: Lighthouse CI
 
 ### Test Organization
+
 ```
 src/
   components/
@@ -599,6 +660,7 @@ src/
 ## Questions & Decisions
 
 ### When to Ask
+
 - **Breaking Changes**: Always get approval first
 - **Architecture Decisions**: Discuss before implementing
 - **New Dependencies**: Justify the addition
@@ -606,6 +668,7 @@ src/
 - **Database Schema**: Review before migrations
 
 ### When to Proceed
+
 - **Bug Fixes**: Fix and explain
 - **Refactoring**: Improve code quality
 - **Tests**: Add missing coverage
@@ -617,6 +680,7 @@ src/
 ## Resources & References
 
 ### Documentation
+
 - [TanStack Start](https://tanstack.com/start)
 - [Fastify](https://fastify.dev/)
 - [Kysely](https://kysely.dev/)
@@ -626,12 +690,14 @@ src/
 - [Turborepo](https://turbo.build/repo)
 
 ### Best Practices
+
 - [TypeScript Performance](https://github.com/microsoft/TypeScript/wiki/Performance)
 - [React Best Practices](https://react.dev/learn)
 - [Node.js Best Practices](https://github.com/goldbergyoni/nodebestpractices)
 - [PostgreSQL Performance](https://wiki.postgresql.org/wiki/Performance_Optimization)
 
 ### Tools
+
 - [Zod](https://zod.dev/)
 - [Vitest](https://vitest.dev/)
 - [Playwright](https://playwright.dev/)

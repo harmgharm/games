@@ -60,6 +60,10 @@ export default tseslint.config(
       'sonarjs/cognitive-complexity': ['error', 30],
       // Allow nested ternaries in test expectations
       'unicorn/no-nested-ternary': 'off',
+      // Test files can be longer (many test cases)
+      'max-lines': ['warn', 1000],
+      // Simpler boolean assertions in tests
+      '@typescript-eslint/strict-boolean-expressions': 'off',
     },
   },
 );

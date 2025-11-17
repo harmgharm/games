@@ -1,20 +1,22 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
+import { createFileRoute } from '@tanstack/react-router';
+import { useEffect, useState } from 'react';
 
 function getNames() {
-  return fetch('/demo/api/names').then((res) => res.json() as Promise<string[]>)
+  return fetch('/demo/api/names').then(
+    (res) => res.json() as Promise<string[]>,
+  );
 }
 
 export const Route = createFileRoute('/demo/start/api-request')({
   component: Home,
-})
+});
 
 function Home() {
-  const [names, setNames] = useState<string[]>([])
+  const [names, setNames] = useState<string[]>([]);
 
   useEffect(() => {
-    getNames().then(setNames)
-  }, [])
+    getNames().then(setNames);
+  }, []);
 
   return (
     <div
@@ -39,5 +41,5 @@ function Home() {
         </ul>
       </div>
     </div>
-  )
+  );
 }

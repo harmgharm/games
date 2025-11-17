@@ -1,5 +1,6 @@
 // @ts-check
 import eslint from '@eslint/js';
+import prettierConfig from 'eslint-config-prettier';
 import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
 import importX from 'eslint-plugin-import-x';
 import noOnlyTests from 'eslint-plugin-no-only-tests';
@@ -12,7 +13,7 @@ import tseslint from 'typescript-eslint';
 
 /**
  * Base ESLint config for TypeScript with maximum strictness
- * Includes: TypeScript strict, import-x, unicorn, sonarjs, simple-import-sort
+ * Includes: TypeScript strict, import-x, unicorn, sonarjs, simple-import-sort, prettier
  */
 export default tseslint.config(
   // ESLint recommended
@@ -27,6 +28,9 @@ export default tseslint.config(
 
   // Unicorn recommended
   unicorn.configs['flat/recommended'],
+
+  // Prettier - disables conflicting formatting rules (must be last)
+  prettierConfig,
 
   // Custom configuration
   {

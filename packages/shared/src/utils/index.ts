@@ -12,9 +12,7 @@ export function keys<T extends object>(object: T): (keyof T)[] {
 /**
  * Type-safe object entries helper
  */
-export function entries<T extends object>(
-  object: T,
-): [keyof T, T[keyof T]][] {
+export function entries<T extends object>(object: T): [keyof T, T[keyof T]][] {
   return Object.entries(object) as [keyof T, T[keyof T]][];
 }
 
