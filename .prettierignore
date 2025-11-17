@@ -1,0 +1,17 @@
+# Dependencies
+node_modules
+pnpm-lock.yaml
+
+# Build outputs
+dist
+.next
+.turbo
+.vinxi
+.output
+coverage
+
+# Misc
+.git
+.env
+.env.*
+!.env.example

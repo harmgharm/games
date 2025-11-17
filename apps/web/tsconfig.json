@@ -1,0 +1,13 @@
+{
+  "extends": "@games/typescript-config/react.json",
+  "compilerOptions": {
+    "types": ["vite/client"],
+    "noEmit": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules", "dist", ".vinxi", ".output"]
+}
