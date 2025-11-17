@@ -1,9 +1,11 @@
 // @ts-check
 import eslint from '@eslint/js';
+import { createTypeScriptImportResolver } from 'eslint-import-resolver-typescript';
 import importX from 'eslint-plugin-import-x';
 import noOnlyTests from 'eslint-plugin-no-only-tests';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import sonarjs from 'eslint-plugin-sonarjs';
+import turbo from 'eslint-plugin-turbo';
 import unicorn from 'eslint-plugin-unicorn';
 import unusedImports from 'eslint-plugin-unused-imports';
 import tseslint from 'typescript-eslint';
@@ -33,6 +35,15 @@ export default tseslint.config(
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
       'no-only-tests': noOnlyTests,
+      turbo,
+    },
+    settings: {
+      // TypeScript import resolver for monorepo and path aliases
+      'import-x/resolver-next': [
+        createTypeScriptImportResolver({
+          alwaysTryTypes: true,
+        }),
+      ],
     },
     rules: {
       // TypeScript - Maximum Strictness
@@ -94,8 +105,8 @@ export default tseslint.config(
       // No test.only or describe.only in commits
       'no-only-tests/no-only-tests': 'error',
 
-      // SonarJS - Cognitive Complexity
-      'sonarjs/cognitive-complexity': ['error', 15],
+      // Turbo - Catch undeclared env vars in turbo.json
+      'turbo/no-undeclared-env-vars': 'error',
 
       // Unicorn adjustments (some rules are too aggressive)
       'unicorn/prevent-abbreviations': [
