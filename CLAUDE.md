@@ -1,10 +1,12 @@
 # Gaming Platform - CLAUDE.md
 
-> **Note for Claude Code on the Web**: Claude should commit and push changes to feature branches during sessions to prevent work loss (cloud workspace is temporary). Developer reviews and merges changes on GitHub after the session.
+> **Note for Claude Code on the Web**: Claude should commit and push changes to feature branches during sessions to
+> prevent work loss (cloud workspace is temporary). Developer reviews and merges changes on GitHub after the session.
 
 ## Project Overview
 
-A modern gaming/social platform with real-time features including duels, chat, friends system, and matchmaking. Built for long-term scalability with support for future mobile, desktop apps, and microservices architecture.
+A modern gaming/social platform with real-time features including duels, chat, friends system, and matchmaking. Built
+for long-term scalability with support for future mobile, desktop apps, and microservices architecture.
 
 ## Core Principles
 
@@ -720,5 +722,4 @@ src/
 
 ---
 
-**Last Updated**: 2025-11-16
-**Version**: 1.0.0
+**Last Updated**: 2025-11-16 **Version**: 1.0.0

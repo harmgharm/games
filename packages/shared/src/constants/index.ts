@@ -10,12 +10,7 @@ export const API_BASE_PATH = `/api/${API_VERSION}`;
 export const GAME_TYPES = ['trivia', 'word', 'card', 'board'] as const;
 
 // Game Status
-export const GAME_STATUSES = [
-  'waiting',
-  'in_progress',
-  'completed',
-  'cancelled',
-] as const;
+export const GAME_STATUSES = ['waiting', 'in_progress', 'completed', 'cancelled'] as const;
 
 // Pagination
 export const DEFAULT_PAGE_SIZE = 20;
