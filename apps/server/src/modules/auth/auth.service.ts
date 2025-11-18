@@ -5,7 +5,13 @@
  */
 
 import { AppError } from '@games/types';
-import type { LoginInput, RegisterInput } from '@games/validation';
+import type {
+  ForgotPasswordInput,
+  LoginInput,
+  RegisterInput,
+  ResetPasswordInput,
+  VerifyEmailInput,
+} from '@games/validation';
 import type { FastifyInstance } from 'fastify';
 
 import { createEmailQueue } from '../email/email.queue';
@@ -301,4 +307,132 @@ export async function getCurrentUser(userId: string) {
     identityVerified: user.identity_verified,
     createdAt: user.created_at,
   };
+}
+
+/**
+ * Token expiry for password reset (1 hour)
+ */
+const PASSWORD_RESET_TOKEN_EXPIRY = 60 * 60 * 1000;
+
+/**
+ * Verify email with token
+ */
+export async function verifyEmail(input: VerifyEmailInput): Promise<void> {
+  // Find token
+  const tokenHash = hashToken(input.token);
+  const emailToken = await emailTokenRepository.findByHash(tokenHash);
+
+  if (emailToken === undefined) {
+    throw new AppError('Invalid or expired verification token', 'INVALID_TOKEN', 400, true);
+  }
+
+  // Check if token is expired
+  if (emailToken.expires_at < new Date()) {
+    await emailTokenRepository.markUsed(emailToken.id);
+    throw new AppError('Verification token has expired', 'TOKEN_EXPIRED', 400, true);
+  }
+
+  // Check token type
+  if (emailToken.type !== 'verification') {
+    throw new AppError('Invalid token type', 'INVALID_TOKEN', 400, true);
+  }
+
+  // Mark email as verified
+  await userRepository.updateEmailVerified(emailToken.user_id, true);
+
+  // Mark token as used
+  await emailTokenRepository.markUsed(emailToken.id);
+}
+
+/**
+ * Request password reset email
+ */
+export async function forgotPassword(
+  fastify: FastifyInstance,
+  input: ForgotPasswordInput,
+): Promise<void> {
+  // Always return success to prevent email enumeration
+  const user = await userRepository.findByEmail(input.email);
+
+  if (user === undefined) {
+    // Don't reveal that the email doesn't exist
+    return;
+  }
+
+  // Invalidate any existing password reset tokens
+  await emailTokenRepository.invalidateForUser(user.id, 'password_reset');
+
+  // Generate reset token and code
+  const resetToken = generateToken();
+  const resetCode = generateCode();
+
+  // Create email token
+  await emailTokenRepository.create({
+    user_id: user.id,
+    token_hash: hashToken(resetToken),
+    code: resetCode,
+    type: 'password_reset',
+    expires_at: new Date(Date.now() + PASSWORD_RESET_TOKEN_EXPIRY),
+  });
+
+  // Queue password reset email
+  const emailQueue = createEmailQueue(fastify);
+  await emailQueue.queuePasswordResetEmail(user.email, user.id, {
+    username: user.username,
+    token: resetToken,
+    code: resetCode,
+  });
+}
+
+/**
+ * Reset password with token
+ */
+export async function resetPassword(input: ResetPasswordInput): Promise<void> {
+  // Find token
+  const tokenHash = hashToken(input.token);
+  const emailToken = await emailTokenRepository.findByHash(tokenHash);
+
+  if (emailToken === undefined) {
+    throw new AppError('Invalid or expired reset token', 'INVALID_TOKEN', 400, true);
+  }
+
+  // Check if token is expired
+  if (emailToken.expires_at < new Date()) {
+    await emailTokenRepository.markUsed(emailToken.id);
+    throw new AppError('Reset token has expired', 'TOKEN_EXPIRED', 400, true);
+  }
+
+  // Check token type
+  if (emailToken.type !== 'password_reset') {
+    throw new AppError('Invalid token type', 'INVALID_TOKEN', 400, true);
+  }
+
+  // Check password strength
+  const user = await userRepository.findById(emailToken.user_id);
+  if (user === undefined) {
+    throw new AppError('User not found', 'USER_NOT_FOUND', 404, true);
+  }
+
+  const strength = checkPasswordStrength(input.password, [user.email, user.username]);
+  if (!strength.isStrong) {
+    throw new AppError(
+      strength.feedback.warning === '' ? 'Password is too weak' : strength.feedback.warning,
+      'WEAK_PASSWORD',
+      400,
+      true,
+      { suggestions: strength.feedback.suggestions },
+    );
+  }
+
+  // Hash new password
+  const passwordHash = await hashPassword(input.password);
+
+  // Update password
+  await userRepository.updatePassword(emailToken.user_id, passwordHash);
+
+  // Mark token as used
+  await emailTokenRepository.markUsed(emailToken.id);
+
+  // Invalidate all sessions (security measure)
+  await sessionRepository.revokeAllForUser(emailToken.user_id);
 }

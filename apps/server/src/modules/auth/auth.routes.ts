@@ -4,7 +4,13 @@
  * API endpoints for authentication.
  */
 
-import { loginSchema, registerSchema } from '@games/validation';
+import {
+  forgotPasswordSchema,
+  loginSchema,
+  registerSchema,
+  resetPasswordSchema,
+  verifyEmailSchema,
+} from '@games/validation';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
 import { sendCreated, sendNoContent, sendSuccess } from '../../utils/response';
@@ -110,6 +116,43 @@ export function authRoutes(fastify: FastifyInstance): void {
     });
 
     return sendNoContent(reply);
+  });
+
+  /**
+   * POST /verify-email - Verify email with token
+   */
+  fastify.post('/verify-email', async (request: FastifyRequest, reply: FastifyReply) => {
+    const input = verifyEmailSchema.parse(request.body);
+    await authService.verifyEmail(input);
+
+    return sendSuccess(reply, {
+      message: 'Email verified successfully',
+    });
+  });
+
+  /**
+   * POST /forgot-password - Request password reset email
+   */
+  fastify.post('/forgot-password', async (request: FastifyRequest, reply: FastifyReply) => {
+    const input = forgotPasswordSchema.parse(request.body);
+    await authService.forgotPassword(fastify, input);
+
+    // Always return success to prevent email enumeration
+    return sendSuccess(reply, {
+      message: 'If an account with that email exists, a password reset email has been sent',
+    });
+  });
+
+  /**
+   * POST /reset-password - Reset password with token
+   */
+  fastify.post('/reset-password', async (request: FastifyRequest, reply: FastifyReply) => {
+    const input = resetPasswordSchema.parse(request.body);
+    await authService.resetPassword(input);
+
+    return sendSuccess(reply, {
+      message: 'Password reset successfully',
+    });
   });
 
   /**

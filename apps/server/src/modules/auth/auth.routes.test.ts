@@ -2,6 +2,7 @@ import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { buildServer } from '../../app';
+import { emailTokenRepository } from '../email/email.repository';
 import { sessionRepository, userRepository } from './auth.repository';
 import { hashPassword } from './utils/password';
 
@@ -29,6 +30,8 @@ vi.mock('./auth.repository', () => ({
     findById: vi.fn(),
     create: vi.fn(),
     updateLastLogin: vi.fn(),
+    updateEmailVerified: vi.fn(),
+    updatePassword: vi.fn(),
   },
   sessionRepository: {
     create: vi.fn(),
@@ -64,15 +67,11 @@ vi.mock('../email/email.repository', () => ({
       created_at: new Date(),
       used_at: null,
     }),
+    findByHash: vi.fn(),
     findByToken: vi.fn(),
     findByCode: vi.fn(),
-    markAsUsed: vi.fn(),
-    deleteExpired: vi.fn(),
-  },
-  emailTokenHashRepository: {
-    create: vi.fn(),
-    findByHash: vi.fn(),
-    markAsUsed: vi.fn(),
+    markUsed: vi.fn(),
+    invalidateForUser: vi.fn(),
     deleteExpired: vi.fn(),
   },
 }));
@@ -417,6 +416,251 @@ describe('auth routes', () => {
       const cookies = response.cookies;
       const refreshCookie = cookies.find((c) => c.name === 'refresh_token');
       expect(refreshCookie).toBeDefined();
+    });
+  });
+
+  describe('POST /api/v1/auth/verify-email', () => {
+    it('should verify email with valid token', async () => {
+      const mockToken = {
+        id: 'token-123',
+        user_id: 'user-123',
+        type: 'verification' as const,
+        token_hash: Buffer.from('mock-hash'),
+        code: '123456',
+        expires_at: new Date(Date.now() + 86400000),
+        created_at: new Date(),
+        used_at: null,
+      };
+
+      vi.mocked(emailTokenRepository.findByHash).mockResolvedValue(mockToken);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/verify-email',
+        payload: { token: 'valid-token' },
+      });
+
+      expect(response.statusCode).toBe(200);
+
+      const body = JSON.parse(response.body);
+      expect(body.data.message).toBe('Email verified successfully');
+      expect(userRepository.updateEmailVerified).toHaveBeenCalledWith('user-123', true);
+      expect(emailTokenRepository.markUsed).toHaveBeenCalledWith('token-123');
+    });
+
+    it('should return 400 for invalid token', async () => {
+      vi.mocked(emailTokenRepository.findByHash).mockResolvedValue(undefined);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/verify-email',
+        payload: { token: 'invalid-token' },
+      });
+
+      expect(response.statusCode).toBe(400);
+
+      const body = JSON.parse(response.body);
+      expect(body.error.code).toBe('INVALID_TOKEN');
+    });
+
+    it('should return 400 for expired token', async () => {
+      const mockToken = {
+        id: 'token-123',
+        user_id: 'user-123',
+        type: 'verification' as const,
+        token_hash: Buffer.from('mock-hash'),
+        code: '123456',
+        expires_at: new Date(Date.now() - 86400000), // Expired
+        created_at: new Date(),
+        used_at: null,
+      };
+
+      vi.mocked(emailTokenRepository.findByHash).mockResolvedValue(mockToken);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/verify-email',
+        payload: { token: 'expired-token' },
+      });
+
+      expect(response.statusCode).toBe(400);
+
+      const body = JSON.parse(response.body);
+      expect(body.error.code).toBe('TOKEN_EXPIRED');
+    });
+
+    it('should return 400 for missing token', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/verify-email',
+        payload: {},
+      });
+
+      expect(response.statusCode).toBe(400);
+    });
+  });
+
+  describe('POST /api/v1/auth/forgot-password', () => {
+    it('should return success for existing email', async () => {
+      const mockUser = createMockUser();
+      vi.mocked(userRepository.findByEmail).mockResolvedValue(mockUser);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/forgot-password',
+        payload: { email: 'test@example.com' },
+      });
+
+      expect(response.statusCode).toBe(200);
+
+      const body = JSON.parse(response.body);
+      expect(body.data.message).toContain('password reset email has been sent');
+      expect(emailTokenRepository.invalidateForUser).toHaveBeenCalledWith(
+        'user-123',
+        'password_reset',
+      );
+      expect(emailTokenRepository.create).toHaveBeenCalled();
+    });
+
+    it('should return success for non-existing email (prevent enumeration)', async () => {
+      vi.mocked(userRepository.findByEmail).mockResolvedValue(undefined);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/forgot-password',
+        payload: { email: 'nonexistent@example.com' },
+      });
+
+      expect(response.statusCode).toBe(200);
+
+      const body = JSON.parse(response.body);
+      expect(body.data.message).toContain('password reset email has been sent');
+    });
+
+    it('should return 400 for invalid email format', async () => {
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/forgot-password',
+        payload: { email: 'invalid-email' },
+      });
+
+      expect(response.statusCode).toBe(400);
+    });
+  });
+
+  describe('POST /api/v1/auth/reset-password', () => {
+    it('should reset password with valid token', async () => {
+      const mockToken = {
+        id: 'token-123',
+        user_id: 'user-123',
+        type: 'password_reset' as const,
+        token_hash: Buffer.from('mock-hash'),
+        code: '123456',
+        expires_at: new Date(Date.now() + 3600000),
+        created_at: new Date(),
+        used_at: null,
+      };
+
+      const mockUser = createMockUser();
+
+      vi.mocked(emailTokenRepository.findByHash).mockResolvedValue(mockToken);
+      vi.mocked(userRepository.findById).mockResolvedValue(mockUser);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/reset-password',
+        payload: {
+          token: 'valid-token',
+          password: 'NewStr0ngP@ssword!2024',
+        },
+      });
+
+      expect(response.statusCode).toBe(200);
+
+      const body = JSON.parse(response.body);
+      expect(body.data.message).toBe('Password reset successfully');
+      expect(userRepository.updatePassword).toHaveBeenCalled();
+      expect(emailTokenRepository.markUsed).toHaveBeenCalledWith('token-123');
+      expect(sessionRepository.revokeAllForUser).toHaveBeenCalledWith('user-123');
+    });
+
+    it('should return 400 for invalid token', async () => {
+      vi.mocked(emailTokenRepository.findByHash).mockResolvedValue(undefined);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/reset-password',
+        payload: {
+          token: 'invalid-token',
+          password: 'NewStr0ngP@ssword!2024',
+        },
+      });
+
+      expect(response.statusCode).toBe(400);
+
+      const body = JSON.parse(response.body);
+      expect(body.error.code).toBe('INVALID_TOKEN');
+    });
+
+    it('should return 400 for weak password', async () => {
+      const mockToken = {
+        id: 'token-123',
+        user_id: 'user-123',
+        type: 'password_reset' as const,
+        token_hash: Buffer.from('mock-hash'),
+        code: '123456',
+        expires_at: new Date(Date.now() + 3600000),
+        created_at: new Date(),
+        used_at: null,
+      };
+
+      const mockUser = createMockUser();
+
+      vi.mocked(emailTokenRepository.findByHash).mockResolvedValue(mockToken);
+      vi.mocked(userRepository.findById).mockResolvedValue(mockUser);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/reset-password',
+        payload: {
+          token: 'valid-token',
+          password: 'password123', // Common weak password
+        },
+      });
+
+      expect(response.statusCode).toBe(400);
+
+      const body = JSON.parse(response.body);
+      expect(body.error.code).toBe('WEAK_PASSWORD');
+    });
+
+    it('should return 400 for expired token', async () => {
+      const mockToken = {
+        id: 'token-123',
+        user_id: 'user-123',
+        type: 'password_reset' as const,
+        token_hash: Buffer.from('mock-hash'),
+        code: '123456',
+        expires_at: new Date(Date.now() - 3600000), // Expired
+        created_at: new Date(),
+        used_at: null,
+      };
+
+      vi.mocked(emailTokenRepository.findByHash).mockResolvedValue(mockToken);
+
+      const response = await app.inject({
+        method: 'POST',
+        url: '/api/v1/auth/reset-password',
+        payload: {
+          token: 'expired-token',
+          password: 'NewStr0ngP@ssword!2024',
+        },
+      });
+
+      expect(response.statusCode).toBe(400);
+
+      const body = JSON.parse(response.body);
+      expect(body.error.code).toBe('TOKEN_EXPIRED');
     });
   });
 
