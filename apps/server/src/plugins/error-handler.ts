@@ -2,6 +2,7 @@ import type { ApiResponse, AppError } from '@games/types';
 import { isAppError } from '@games/types';
 import type { FastifyError, FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
+import { ZodError } from 'zod';
 
 /**
  * Global error handler plugin for Fastify
@@ -50,6 +51,35 @@ function errorHandlerPlugin(fastify: FastifyInstance): void {
       };
 
       return reply.status(appError.statusCode).send(response);
+    }
+
+    // Handle Zod validation errors
+    if (error instanceof ZodError) {
+      logger.warn(
+        {
+          issues: error.issues,
+        },
+        'Validation error',
+      );
+
+      const response: ApiResponse<null> = {
+        data: null,
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Validation failed',
+          details: {
+            issues: error.issues.map((issue) => ({
+              path: issue.path.join('.'),
+              message: issue.message,
+            })),
+          },
+        },
+        meta: {
+          timestamp: new Date().toISOString(),
+        },
+      };
+
+      return reply.status(400).send(response);
     }
 
     // Handle Fastify validation errors

@@ -60,8 +60,8 @@ export async function register(
   const strength = checkPasswordStrength(input.password, [input.email, input.username]);
   if (!strength.isStrong) {
     throw new AppError(
-      'WEAK_PASSWORD',
       strength.feedback.warning === '' ? 'Password is too weak' : strength.feedback.warning,
+      'WEAK_PASSWORD',
       400,
       true,
       { suggestions: strength.feedback.suggestions },
@@ -71,13 +71,13 @@ export async function register(
   // Check if email already exists
   const existingEmail = await userRepository.findByEmail(input.email);
   if (existingEmail !== undefined) {
-    throw new AppError('EMAIL_EXISTS', 'Email is already registered', 409, true);
+    throw new AppError('Email is already registered', 'EMAIL_EXISTS', 409, true);
   }
 
   // Check if username already exists
   const existingUsername = await userRepository.findByUsername(input.username);
   if (existingUsername !== undefined) {
-    throw new AppError('USERNAME_EXISTS', 'Username is already taken', 409, true);
+    throw new AppError('Username is already taken', 'USERNAME_EXISTS', 409, true);
   }
 
   // Hash password
@@ -132,13 +132,13 @@ export async function login(
   // Find user by email
   const user = await userRepository.findByEmail(input.email);
   if (user === undefined) {
-    throw new AppError('INVALID_CREDENTIALS', 'Invalid email or password', 401, true);
+    throw new AppError('Invalid email or password', 'INVALID_CREDENTIALS', 401, true);
   }
 
   // Verify password
   const isValid = await verifyPassword(user.password_hash, input.password);
   if (!isValid) {
-    throw new AppError('INVALID_CREDENTIALS', 'Invalid email or password', 401, true);
+    throw new AppError('Invalid email or password', 'INVALID_CREDENTIALS', 401, true);
   }
 
   // Check if password needs rehashing (Argon2 options changed)
@@ -192,20 +192,20 @@ export async function refresh(
   const session = await sessionRepository.findByTokenHash(tokenHash);
 
   if (session === undefined) {
-    throw new AppError('INVALID_TOKEN', 'Invalid or expired refresh token', 401, true);
+    throw new AppError('Invalid or expired refresh token', 'INVALID_TOKEN', 401, true);
   }
 
   // Check if session is expired
   if (session.expires_at < new Date()) {
     await sessionRepository.revoke(session.id);
-    throw new AppError('TOKEN_EXPIRED', 'Refresh token has expired', 401, true);
+    throw new AppError('Refresh token has expired', 'TOKEN_EXPIRED', 401, true);
   }
 
   // Get user
   const user = await userRepository.findById(session.user_id);
   if (user === undefined) {
     await sessionRepository.revoke(session.id);
-    throw new AppError('USER_NOT_FOUND', 'User not found', 401, true);
+    throw new AppError('User not found', 'USER_NOT_FOUND', 401, true);
   }
 
   // Revoke old session (token rotation)
@@ -255,7 +255,7 @@ export async function getCurrentUser(userId: string) {
   const user = await userRepository.findById(userId);
 
   if (user === undefined) {
-    throw new AppError('USER_NOT_FOUND', 'User not found', 404, true);
+    throw new AppError('User not found', 'USER_NOT_FOUND', 404, true);
   }
 
   return {
