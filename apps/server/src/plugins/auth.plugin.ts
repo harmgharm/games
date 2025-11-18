@@ -10,6 +10,7 @@ import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
 
 import { env } from '../config/env';
+import { db } from '../db';
 
 /**
  * Extend Fastify types for JWT
@@ -17,6 +18,7 @@ import { env } from '../config/env';
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+    requireVerifiedEmail: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
   }
 }
 
@@ -60,6 +62,38 @@ async function authPlugin(fastify: FastifyInstance): Promise<void> {
         error: {
           code: 'UNAUTHORIZED',
           message: 'Invalid or expired access token',
+        },
+        meta: { timestamp: new Date().toISOString() },
+      });
+    }
+  });
+
+  /**
+   * Require verified email decorator
+   *
+   * Use as onRequest hook after authenticate to require email verification:
+   * @example
+   * ```typescript
+   * fastify.get('/chat', { onRequest: [fastify.authenticate, fastify.requireVerifiedEmail] }, handler)
+   * ```
+   */
+  fastify.decorate('requireVerifiedEmail', async (request: FastifyRequest, reply: FastifyReply) => {
+    // This assumes authenticate has already been called
+    const { userId } = request.user as { userId: string };
+
+    // Check if user's email is verified
+    const user = await db
+      .selectFrom('users')
+      .select(['email_verified'])
+      .where('id', '=', userId)
+      .executeTakeFirst();
+
+    if (user === undefined || !user.email_verified) {
+      return reply.status(403).send({
+        data: null,
+        error: {
+          code: 'EMAIL_NOT_VERIFIED',
+          message: 'Please verify your email to access this feature',
         },
         meta: { timestamp: new Date().toISOString() },
       });

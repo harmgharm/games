@@ -4,8 +4,10 @@ import Fastify, { type FastifyInstance } from 'fastify';
 
 import { env } from './config/env';
 import { authRoutes } from './modules/auth/auth.routes';
+import { emailRoutes } from './modules/email';
 import authPlugin from './plugins/auth.plugin';
 import errorHandler from './plugins/error-handler';
+import queuePlugin from './plugins/queue.plugin';
 import rateLimitPlugin, { AUTH_RATE_LIMITS } from './plugins/rate-limit.plugin';
 
 /**
@@ -41,6 +43,7 @@ export async function buildServer(): Promise<FastifyInstance> {
   await fastify.register(errorHandler);
   await fastify.register(authPlugin);
   await fastify.register(rateLimitPlugin);
+  await fastify.register(queuePlugin);
 
   // Health check route
   fastify.get('/health', () => {
@@ -93,6 +96,30 @@ export async function buildServer(): Promise<FastifyInstance> {
       await app.register(authRoutes);
     },
     { prefix: '/api/v1/auth' },
+  );
+
+  // Register email routes with rate limiting
+  await fastify.register(
+    async (app) => {
+      // Apply rate limits to email routes
+      app.addHook('onRoute', (routeOptions) => {
+        switch (routeOptions.url) {
+          case '/forgot-password':
+          case '/resend-verification': {
+            routeOptions.config = {
+              ...routeOptions.config,
+              rateLimit: AUTH_RATE_LIMITS.register, // Same as register (10/15min)
+            };
+
+            break;
+          }
+          // No default
+        }
+      });
+
+      await app.register(emailRoutes);
+    },
+    { prefix: '/api/v1/email' },
   );
 
   return fastify;

@@ -32,6 +32,11 @@ const envSchema = z.object({
 
   // Logging
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
+
+  // Email (optional in development)
+  POSTMARK_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().email().default('noreply@example.com'),
+  APP_URL: z.string().url().default('http://localhost:3000'),
 });
 
 /**

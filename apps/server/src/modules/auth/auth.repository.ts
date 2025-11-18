@@ -65,6 +65,28 @@ export const userRepository = {
       .where('id', '=', userId)
       .execute();
   },
+
+  /**
+   * Update email verified status
+   */
+  async updateEmailVerified(userId: string, verified: boolean): Promise<void> {
+    await db
+      .updateTable('users')
+      .set({ email_verified: verified })
+      .where('id', '=', userId)
+      .execute();
+  },
+
+  /**
+   * Update password
+   */
+  async updatePassword(userId: string, passwordHash: string): Promise<void> {
+    await db
+      .updateTable('users')
+      .set({ password_hash: passwordHash })
+      .where('id', '=', userId)
+      .execute();
+  },
 };
 
 /**

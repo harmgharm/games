@@ -44,11 +44,13 @@
     "@zxcvbn-ts/language-common": "^3.0.4",
     "@zxcvbn-ts/language-en": "^3.0.2",
     "argon2": "^0.44.0",
+    "bullmq": "^5.63.2",
     "fastify": "^5.2.1",
     "fastify-plugin": "^5.0.1",
     "ioredis": "^5.8.2",
     "kysely": "^0.27.5",
     "pg": "^8.13.1",
+    "postmark": "^4.0.5",
     "zod": "^3.24.1"
   },
   "optionalDependencies": {

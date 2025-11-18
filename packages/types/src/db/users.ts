@@ -64,3 +64,22 @@ export interface SessionsTable {
 export type Session = Selectable<SessionsTable>;
 export type NewSession = Insertable<SessionsTable>;
 export type SessionUpdate = Updateable<SessionsTable>;
+
+// ============================================
+// EMAIL TOKENS
+// ============================================
+
+export interface EmailTokensTable {
+  id: Generated<string>;
+  user_id: string; // FK -> users
+  token_hash: Buffer;
+  code: string;
+  type: string; // 'verification' | 'password_reset'
+  expires_at: Date;
+  used_at: Date | null;
+  created_at: Generated<Date>;
+}
+
+export type EmailToken = Selectable<EmailTokensTable>;
+export type NewEmailToken = Insertable<EmailTokensTable>;
+export type EmailTokenUpdate = Updateable<EmailTokensTable>;

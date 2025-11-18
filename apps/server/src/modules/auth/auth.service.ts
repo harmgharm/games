@@ -8,6 +8,13 @@ import { AppError } from '@games/types';
 import type { LoginInput, RegisterInput } from '@games/validation';
 import type { FastifyInstance } from 'fastify';
 
+import { createEmailQueue } from '../email/email.queue';
+import {
+  emailTokenRepository,
+  generateCode,
+  generateToken,
+  hashToken,
+} from '../email/email.repository';
 import { sessionRepository, userRepository } from './auth.repository';
 import { checkPasswordStrength, hashPassword, needsRehash, verifyPassword } from './utils/password';
 import {
@@ -17,6 +24,11 @@ import {
   hashRefreshToken,
   TOKEN_EXPIRY,
 } from './utils/token';
+
+/**
+ * Token expiry for verification email (24 hours)
+ */
+const VERIFICATION_TOKEN_EXPIRY = 24 * 60 * 60 * 1000;
 
 /**
  * Session metadata for tracking devices
@@ -105,6 +117,27 @@ export async function register(
     user_id: user.id,
     token_hash: hashRefreshToken(refreshToken),
     expires_at: refreshTokenExpiry,
+  });
+
+  // Generate verification token and code
+  const verificationToken = generateToken();
+  const verificationCode = generateCode();
+
+  // Create email token
+  await emailTokenRepository.create({
+    user_id: user.id,
+    token_hash: hashToken(verificationToken),
+    code: verificationCode,
+    type: 'verification',
+    expires_at: new Date(Date.now() + VERIFICATION_TOKEN_EXPIRY),
+  });
+
+  // Queue verification email
+  const emailQueue = createEmailQueue(fastify);
+  await emailQueue.queueVerificationEmail(user.email, user.id, {
+    username: user.username,
+    token: verificationToken,
+    code: verificationCode,
   });
 
   return {
