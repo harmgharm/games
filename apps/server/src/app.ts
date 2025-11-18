@@ -5,6 +5,7 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import { env } from './config/env';
 import { authRoutes } from './modules/auth/auth.routes';
 import { emailRoutes } from './modules/email';
+import { usersRoutes } from './modules/users';
 import authPlugin from './plugins/auth.plugin';
 import errorHandler from './plugins/error-handler';
 import queuePlugin from './plugins/queue.plugin';
@@ -121,6 +122,9 @@ export async function buildServer(): Promise<FastifyInstance> {
     },
     { prefix: '/api/v1/email' },
   );
+
+  // Register users routes
+  await fastify.register(usersRoutes, { prefix: '/api/v1/users' });
 
   return fastify;
 }
