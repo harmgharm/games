@@ -42,13 +42,7 @@ export async function up(db: Kysely<unknown>): Promise<void> {
     .columns(['game_type', 'setting_key'])
     .execute();
 
-  // Seed initial rank tiers
-  await sql`
-    INSERT INTO rank_tiers (name, min_elo, max_elo, color, display_order) VALUES
-    ('Bronze', 0, 1199, '#CD7F32', 1),
-    ('Silver', 1200, 1499, '#C0C0C0', 2),
-    ('Gold', 1500, NULL, '#FFD700', 3)
-  `.execute(db);
+  // Note: Seed data is in /db/seeds/ - run `pnpm seed` after migrations
 }
 
 export async function down(db: Kysely<unknown>): Promise<void> {

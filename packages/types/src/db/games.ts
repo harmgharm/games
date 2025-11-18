@@ -6,6 +6,7 @@ import type {
   GameType,
   JsonColumn,
   MatchType,
+  SoftDeleteColumn,
   TimestampColumns,
 } from './common';
 
@@ -13,7 +14,7 @@ import type {
 // GAMES
 // ============================================
 
-export interface GamesTable extends TimestampColumns {
+export interface GamesTable extends TimestampColumns, SoftDeleteColumn {
   id: Generated<string>;
   game_type: GameType;
   match_type: MatchType;

@@ -6,7 +6,7 @@
 export * from './errors';
 
 // Database types
-export * from './database/index';
+export * from './db/index';
 
 // API Response types
 export interface ApiError {
