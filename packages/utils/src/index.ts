@@ -2,6 +2,8 @@
  * Shared utility functions
  */
 
+export * from './logger';
+
 /**
  * Type-safe object keys helper
  */

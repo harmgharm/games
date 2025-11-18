@@ -4,10 +4,13 @@
  * Handles sending emails via Postmark (console.log in development).
  */
 
+import { createLogger } from '@games/utils';
 import { ServerClient } from 'postmark';
 
 import { env } from '../../config/env';
 import { passwordResetEmail, verificationEmail, welcomeEmail } from './email.templates';
+
+const log = createLogger('Email');
 
 // Initialize Postmark client (only if API key is provided)
 const postmarkClient =
@@ -21,23 +24,20 @@ const postmarkClient =
 async function sendEmail(to: string, subject: string, html: string): Promise<void> {
   // In development, log to console
   if (env.NODE_ENV === 'development' || postmarkClient === null) {
-    /* eslint-disable no-console */
-    console.info('\n========== EMAIL ==========');
-    console.info(`To: ${to}`);
-    console.info(`Subject: ${subject}`);
-    console.info('HTML: [See below]');
-    console.info('================================\n');
+    log.info('\n========== EMAIL ==========');
+    log.info(`To: ${to}`);
+    log.info(`Subject: ${subject}`);
+    log.info('HTML: [See below]');
+    log.info('================================\n');
     // Log a simplified version of the HTML
     const textContent = html
       .replaceAll(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-      // Strip HTML tags (eslint-disable for dev-only console logging)
-      // eslint-disable-next-line sonarjs/slow-regex -- Safe for dev console output
+      // eslint-disable-next-line sonarjs/slow-regex -- Dev-only logging, safe for controlled HTML
       .replaceAll(/<[^>]*>/g, ' ')
       .replaceAll(/\s+/g, ' ')
       .trim();
-    console.info(textContent);
-    console.info('\n================================\n');
-    /* eslint-enable no-console */
+    log.info(textContent);
+    log.info('\n================================\n');
     return;
   }
 

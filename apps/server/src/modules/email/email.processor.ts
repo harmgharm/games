@@ -4,11 +4,14 @@
  * Processes email jobs from BullMQ queue.
  */
 
+import { createLogger } from '@games/utils';
 import type { Job, Worker } from 'bullmq';
 
 import type { EmailJobData } from '../../plugins/queue.plugin';
 import { createEmailWorker } from '../../plugins/queue.plugin';
 import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail } from './email.service';
+
+const log = createLogger('EmailWorker');
 
 /**
  * Process an email job
@@ -60,19 +63,17 @@ export function startEmailWorker(redisUrl: string): Worker<EmailJobData> {
   }, redisUrl);
 
   worker.on('completed', (job) => {
-    // eslint-disable-next-line no-console
-    console.info(`Email job ${job.id ?? 'unknown'} completed: ${job.data.type} to ${job.data.to}`);
+    log.info(`Email job ${job.id ?? 'unknown'} completed: ${job.data.type} to ${job.data.to}`);
   });
 
   worker.on('failed', (job, error) => {
-    console.error(
+    log.error(
       `Email job ${job?.id ?? 'unknown'} failed: ${job?.data.type ?? 'unknown'} to ${job?.data.to ?? 'unknown'}`,
       error,
     );
   });
 
-  // eslint-disable-next-line no-console
-  console.info('Email worker started');
+  log.info('Email worker started');
 
   return worker;
 }

@@ -59,6 +59,9 @@ importers:
       '@games/types':
         specifier: workspace:*
         version: link:../../packages/types
+      '@games/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
       '@games/validation':
         specifier: workspace:*
         version: link:../../packages/validation
@@ -105,6 +108,9 @@ importers:
       '@games/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
+      '@types/ioredis-mock':
+        specifier: ^8.2.6
+        version: 8.2.6(ioredis@5.8.2)
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.1
@@ -114,6 +120,9 @@ importers:
       eslint:
         specifier: ^9.17.0
         version: 9.39.1(jiti@2.6.1)
+      ioredis-mock:
+        specifier: ^8.13.1
+        version: 8.13.1(@types/ioredis-mock@8.2.6(ioredis@5.8.2))(ioredis@5.8.2)
       tsx:
         specifier: ^4.19.2
         version: 4.20.6
@@ -1056,6 +1065,9 @@ packages:
     resolution: {integrity: sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ==}
     engines: {node: '>=18.18'}
 
+  '@ioredis/as-callback@3.0.0':
+    resolution: {integrity: sha512-Kqv1rZ3WbgOrS+hgzJ5xG5WQuhvzzSTRYvNeyPMLOAM78MHSnuKI20JeJGbpuAt//LCuP0vsexZcorqW7kWhJg==}
+
   '@ioredis/commands@1.4.0':
     resolution: {integrity: sha512-aFT2yemJJo+TZCmieA7qnYGQooOS7QfNmYrzGtsYd3g9j5iDP8AimYYAesf79ohjbLG12XxC4nG5DyEnC88AsQ==}
 
@@ -1908,6 +1920,11 @@ packages:
 
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
+
+  '@types/ioredis-mock@8.2.6':
+    resolution: {integrity: sha512-5heqtZMvQ4nXARY0o8rc8cjkJjct2ScM12yCJ/h731S9He93a2cv+kAhwPCNwTKDfNH9gjRfLG4VpAEYJU0/gQ==}
+    peerDependencies:
+      ioredis: '>=5'
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
@@ -3118,6 +3135,14 @@ packages:
       picomatch:
         optional: true
 
+  fengari-interop@0.1.3:
+    resolution: {integrity: sha512-EtZ+oTu3kEwVJnoymFPBVLIbQcCoy9uWCVnMA6h3M/RqHkUBsLYp29+RRHf9rKr6GwjubWREU1O7RretFIXjHw==}
+    peerDependencies:
+      fengari: ^0.1.0
+
+  fengari@0.1.4:
+    resolution: {integrity: sha512-6ujqUuiIYmcgkGz8MGAdERU57EIluGGPSUgGPTsco657EHa+srq0S3/YUl/r9kx1+D+d4rGfYObd+m8K22gB1g==}
+
   fetchdts@0.1.7:
     resolution: {integrity: sha512-YoZjBdafyLIop9lSxXVI33oLD5kN31q4Td+CasofLLYeLXRFeOsuOw0Uo+XNRi9PZlbfdlN2GmRtm4tCEQ9/KA==}
 
@@ -3364,6 +3389,13 @@ packages:
   internal-slot@1.1.0:
     resolution: {integrity: sha512-4gd7VpWNQNB4UKKCFFVcp1AVv+FMOgs9NKzjHKusc8jTMhd5eL1NqQqOpE0KzMds804/yHlglp3uxgluOqAPLw==}
     engines: {node: '>= 0.4'}
+
+  ioredis-mock@8.13.1:
+    resolution: {integrity: sha512-Wsi50AU+cMiI32nAgfwpUaJVBtb4iQdVsOHl9M6R3tePCO/8vGsToCVIG82XWAxN4Se55TZoOzVseu+QngFLyw==}
+    engines: {node: '>=12.22'}
+    peerDependencies:
+      '@types/ioredis-mock': ^8
+      ioredis: ^5
 
   ioredis@5.8.2:
     resolution: {integrity: sha512-C6uC+kleiIMmjViJINWk80sOQw5lEzse1ZmvD+S/s8p8CWapftSaC+kocGTx6xrbrJ4WmYQGC08ffHLr6ToR6Q==}
@@ -3972,6 +4004,10 @@ packages:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
 
+  os-tmpdir@1.0.2:
+    resolution: {integrity: sha512-D2FR03Vir7FIu45XBY20mTb+/ZSWB00sjU9jdQXt83gDrI4Ztz5Fs7/yy74g2N5SVQY4xY1qDr4rNddwYRVX0g==}
+    engines: {node: '>=0.10.0'}
+
   own-keys@1.0.1:
     resolution: {integrity: sha512-qFOyK5PjiWZd+QQIh+1jhdb9LpxTF0qs7Pm8o5QHYZ0M3vKqSqzsZaEB6oWlxZ+q2sJBMI/Ktgd2N5ZwQoRHfg==}
     engines: {node: '>= 0.4'}
@@ -4329,6 +4365,10 @@ packages:
     resolution: {integrity: sha512-hOS089on8RduqdbhvQ5Z37A0ESjsqz6qnRcffsMU3495FuTdqSm+7bhJ29JvIOsBDEEnan5DPu9t3To9VRlMzA==}
     engines: {node: '>=8.10.0'}
 
+  readline-sync@1.4.10:
+    resolution: {integrity: sha512-gNva8/6UAe8QYepIQH/jQ2qn91Qj0B9sYjMBBs3QOB8F2CXcKgLxQaJRP76sWVRQt+QU+8fAkCbCvjjMFu7Ycw==}
+    engines: {node: '>= 0.8.0'}
+
   real-require@0.2.0:
     resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
     engines: {node: '>= 12.13.0'}
@@ -4590,6 +4630,9 @@ packages:
   sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}
 
+  sprintf-js@1.1.3:
+    resolution: {integrity: sha512-Oo+0REFV59/rz3gfJNKQiBlwfHaSESl1pcGyABQsnnIfWOFt6JNj5gCog2U6MLZ//IGYD+nA8nI+mTShREReaA==}
+
   srvx@0.8.16:
     resolution: {integrity: sha512-hmcGW4CgroeSmzgF1Ihwgl+Ths0JqAJ7HwjP2X7e3JzY7u4IydLMcdnlqGQiQGUswz+PO9oh/KtCpOISIvs9QQ==}
     engines: {node: '>=20.16.0'}
@@ -4776,6 +4819,10 @@ packages:
   tldts@7.0.17:
     resolution: {integrity: sha512-Y1KQBgDd/NUc+LfOtKS6mNsC9CCaH+m2P1RoIZy7RAPo3C3/t8X45+zgut31cRZtZ3xKPjfn3TkGTrctC2TQIQ==}
     hasBin: true
+
+  tmp@0.0.33:
+    resolution: {integrity: sha512-jRCJlojKnZ3addtTOjdIqoRuPEKBvNXcGYqzO6zWZX8KfKEpnGY5jfggJQ3EjKuu8D4bJRr0y+cYJFmYbImXGw==}
+    engines: {node: '>=0.6.0'}
 
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
@@ -5856,6 +5903,8 @@ snapshots:
 
   '@humanwhocodes/retry@0.4.3': {}
 
+  '@ioredis/as-callback@3.0.0': {}
+
   '@ioredis/commands@1.4.0': {}
 
   '@isaacs/cliui@8.0.2':
@@ -6743,6 +6792,10 @@ snapshots:
   '@types/deep-eql@4.0.2': {}
 
   '@types/estree@1.0.8': {}
+
+  '@types/ioredis-mock@8.2.6(ioredis@5.8.2)':
+    dependencies:
+      ioredis: 5.8.2
 
   '@types/json-schema@7.0.15': {}
 
@@ -8206,6 +8259,16 @@ snapshots:
     optionalDependencies:
       picomatch: 4.0.3
 
+  fengari-interop@0.1.3(fengari@0.1.4):
+    dependencies:
+      fengari: 0.1.4
+
+  fengari@0.1.4:
+    dependencies:
+      readline-sync: 1.4.10
+      sprintf-js: 1.1.3
+      tmp: 0.0.33
+
   fetchdts@0.1.7: {}
 
   file-entry-cache@8.0.0:
@@ -8445,6 +8508,16 @@ snapshots:
       es-errors: 1.3.0
       hasown: 2.0.2
       side-channel: 1.1.0
+
+  ioredis-mock@8.13.1(@types/ioredis-mock@8.2.6(ioredis@5.8.2))(ioredis@5.8.2):
+    dependencies:
+      '@ioredis/as-callback': 3.0.0
+      '@ioredis/commands': 1.4.0
+      '@types/ioredis-mock': 8.2.6(ioredis@5.8.2)
+      fengari: 0.1.4
+      fengari-interop: 0.1.3(fengari@0.1.4)
+      ioredis: 5.8.2
+      semver: 7.7.3
 
   ioredis@5.8.2:
     dependencies:
@@ -9084,6 +9157,8 @@ snapshots:
       type-check: 0.4.0
       word-wrap: 1.2.5
 
+  os-tmpdir@1.0.2: {}
+
   own-keys@1.0.1:
     dependencies:
       get-intrinsic: 1.3.0
@@ -9418,6 +9493,8 @@ snapshots:
     dependencies:
       picomatch: 2.3.1
 
+  readline-sync@1.4.10: {}
+
   real-require@0.2.0: {}
 
   recast@0.23.11:
@@ -9708,6 +9785,8 @@ snapshots:
 
   sprintf-js@1.0.3: {}
 
+  sprintf-js@1.1.3: {}
+
   srvx@0.8.16: {}
 
   srvx@0.9.6: {}
@@ -9928,6 +10007,10 @@ snapshots:
   tldts@7.0.17:
     dependencies:
       tldts-core: 7.0.17
+
+  tmp@0.0.33:
+    dependencies:
+      os-tmpdir: 1.0.2
 
   to-regex-range@5.0.1:
     dependencies:

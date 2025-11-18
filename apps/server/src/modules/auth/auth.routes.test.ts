@@ -40,22 +40,51 @@ vi.mock('./auth.repository', () => ({
   },
 }));
 
-// Mock Redis for rate limiting
-vi.mock('ioredis', () => {
+// Mock Redis using ioredis-mock
+vi.mock('ioredis', async () => {
+  const RedisMock = await import('ioredis-mock');
   return {
-    default: vi.fn().mockImplementation(() => ({
-      on: vi.fn(),
-      get: vi.fn().mockResolvedValue(null),
-      set: vi.fn().mockResolvedValue('OK'),
-      incr: vi.fn().mockResolvedValue(1),
-      expire: vi.fn().mockResolvedValue(1),
-      ttl: vi.fn().mockResolvedValue(-1),
-      quit: vi.fn().mockResolvedValue('OK'),
-      defineCommand: vi.fn(),
-      rateLimiter: vi.fn().mockResolvedValue([0, 60]),
-    })),
+    default: RedisMock.default,
   };
 });
+
+// Mock the email repositories
+vi.mock('../email/email.repository', () => ({
+  hashToken: vi.fn().mockReturnValue(Buffer.from('mock-hash')),
+  generateToken: vi.fn().mockReturnValue('mock-token-123'),
+  generateCode: vi.fn().mockReturnValue('123456'),
+  emailTokenRepository: {
+    create: vi.fn().mockResolvedValue({
+      id: 'token-123',
+      user_id: 'user-123',
+      type: 'verification',
+      token_hash: Buffer.from('mock-hash'),
+      code: '123456',
+      expires_at: new Date(Date.now() + 86400000),
+      created_at: new Date(),
+      used_at: null,
+    }),
+    findByToken: vi.fn(),
+    findByCode: vi.fn(),
+    markAsUsed: vi.fn(),
+    deleteExpired: vi.fn(),
+  },
+  emailTokenHashRepository: {
+    create: vi.fn(),
+    findByHash: vi.fn(),
+    markAsUsed: vi.fn(),
+    deleteExpired: vi.fn(),
+  },
+}));
+
+// Mock the email queue
+vi.mock('../email/email.queue', () => ({
+  createEmailQueue: vi.fn().mockReturnValue({
+    queueVerificationEmail: vi.fn().mockResolvedValue(undefined),
+    queuePasswordResetEmail: vi.fn().mockResolvedValue(undefined),
+    queueWelcomeEmail: vi.fn().mockResolvedValue(undefined),
+  }),
+}));
 
 // Helper to create complete mock user objects
 function createMockUser(
