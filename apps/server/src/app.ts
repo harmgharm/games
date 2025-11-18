@@ -2,6 +2,7 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import Fastify, { type FastifyInstance } from 'fastify';
 
+import { API_PREFIX } from './config/constants';
 import { env } from './config/env';
 import { authRoutes } from './modules/auth/auth.routes';
 import { emailRoutes } from './modules/email';
@@ -52,7 +53,7 @@ export async function buildServer(): Promise<FastifyInstance> {
   });
 
   // API version route
-  fastify.get('/api/v1', () => {
+  fastify.get(API_PREFIX, () => {
     return {
       name: '@games/server',
       version: '0.0.0',
@@ -96,7 +97,7 @@ export async function buildServer(): Promise<FastifyInstance> {
 
       await app.register(authRoutes);
     },
-    { prefix: '/api/v1/auth' },
+    { prefix: `${API_PREFIX}/auth` },
   );
 
   // Register email routes with rate limiting
@@ -120,11 +121,11 @@ export async function buildServer(): Promise<FastifyInstance> {
 
       await app.register(emailRoutes);
     },
-    { prefix: '/api/v1/email' },
+    { prefix: `${API_PREFIX}/email` },
   );
 
   // Register users routes
-  await fastify.register(usersRoutes, { prefix: '/api/v1/users' });
+  await fastify.register(usersRoutes, { prefix: `${API_PREFIX}/users` });
 
   return fastify;
 }
