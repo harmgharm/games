@@ -10,6 +10,15 @@ export default defineConfig({
     exclude: ['node_modules', 'dist'],
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
+    env: {
+      NODE_ENV: 'test',
+      DATABASE_URL: 'postgresql://test:test@localhost:5432/test',
+      REDIS_URL: 'redis://localhost:6379',
+      JWT_SECRET: 'test-jwt-secret-for-testing-only',
+      JWT_EXPIRES_IN: '15m',
+      CORS_ORIGIN: 'http://localhost:3000',
+      LOG_LEVEL: 'error',
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
