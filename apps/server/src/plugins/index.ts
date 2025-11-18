@@ -1,0 +1,5 @@
+/**
+ * Fastify plugins
+ */
+
+export { default as errorHandler } from './error-handler';

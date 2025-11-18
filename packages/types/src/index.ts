@@ -2,6 +2,12 @@
  * Shared TypeScript types and interfaces
  */
 
+// Error types
+export * from './errors';
+
+// Database types
+export * from './database';
+
 // User types
 export interface User {
   id: string;

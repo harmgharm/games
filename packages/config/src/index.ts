@@ -2,5 +2,8 @@
  * Server configuration factories
  */
 
-// Placeholder - will add logger, database, redis factories
-export {};
+// Logger factory
+export * from './logger';
+
+// Database factory
+export * from './database';

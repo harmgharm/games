@@ -18,5 +18,8 @@
   "devDependencies": {
     "@games/typescript-config": "workspace:*",
     "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "kysely": "^0.27.5"
   }
 }
