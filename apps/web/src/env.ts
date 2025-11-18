@@ -33,9 +33,9 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    VITE_API_URL: import.meta.env.VITE_API_URL,
-    VITE_APP_ENV: import.meta.env.VITE_APP_ENV,
-    VITE_ENABLE_ANALYTICS: import.meta.env.VITE_ENABLE_ANALYTICS,
+    VITE_API_URL: import.meta.env.VITE_API_URL as string,
+    VITE_APP_ENV: import.meta.env.VITE_APP_ENV as string | undefined,
+    VITE_ENABLE_ANALYTICS: import.meta.env.VITE_ENABLE_ANALYTICS as string | undefined,
   },
 
   /**
@@ -46,7 +46,7 @@ export const env = createEnv({
   /**
    * Skip validation in certain environments
    */
-  skipValidation: !!process.env.SKIP_ENV_VALIDATION,
+  skipValidation: process.env.SKIP_ENV_VALIDATION === 'true',
 
   /**
    * Empty string handling

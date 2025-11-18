@@ -11,16 +11,18 @@ async function buildServer() {
   const fastify = Fastify({
     logger: {
       level: env.LOG_LEVEL,
-      transport:
-        env.NODE_ENV === 'development'
-          ? {
+      // Only include transport in development (exactOptionalPropertyTypes)
+      ...(env.NODE_ENV === 'development'
+        ? {
+            transport: {
               target: 'pino-pretty',
               options: {
                 translateTime: 'HH:MM:ss Z',
                 ignore: 'pid,hostname',
               },
-            }
-          : undefined,
+            },
+          }
+        : {}),
     },
   });
 

@@ -1,9 +1,10 @@
 import { promises as fs } from 'node:fs';
-import * as path from 'node:path';
+import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { Kysely, Migrator, FileMigrationProvider, PostgresDialect } from 'kysely';
-import { Pool } from 'pg';
+
 import type { Database } from '@games/types';
+import { FileMigrationProvider, Kysely, Migrator, PostgresDialect } from 'kysely';
+import { Pool } from 'pg';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

@@ -81,10 +81,13 @@ async function errorHandlerPlugin(fastify: FastifyInstance): Promise<void> {
     }
 
     // Handle unknown errors
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorStack = error instanceof Error ? error.stack : undefined;
+
     logger.error(
       {
         err: error,
-        stack: error.stack,
+        stack: errorStack,
       },
       'Unhandled error',
     );
@@ -95,8 +98,8 @@ async function errorHandlerPlugin(fastify: FastifyInstance): Promise<void> {
       data: null,
       error: {
         code: 'INTERNAL_ERROR',
-        message: isProd ? 'An unexpected error occurred' : error.message,
-        ...(isProd ? {} : { details: { stack: error.stack } }),
+        message: isProd ? 'An unexpected error occurred' : errorMessage,
+        ...(isProd || errorStack === undefined ? {} : { details: { stack: errorStack } }),
       },
       meta: {
         timestamp: new Date().toISOString(),

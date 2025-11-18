@@ -64,29 +64,32 @@ export function createDatabase(config: DatabaseConfig): Kysely<Database> {
 
   return new Kysely<Database>({
     dialect,
-    log: logger
-      ? (event) => {
-          if (event.level === 'query') {
-            logger.debug(
-              {
-                sql: event.query.sql,
-                params: event.query.parameters,
-                duration: event.queryDurationMillis,
-              },
-              'Database query',
-            );
-          } else if (event.level === 'error') {
-            logger.error(
-              {
-                sql: event.query.sql,
-                params: event.query.parameters,
-                error: event.error,
-              },
-              'Database query error',
-            );
-          }
+    // Only include log config when logger is provided (exactOptionalPropertyTypes)
+    ...(logger
+      ? {
+          log: (event) => {
+            if (event.level === 'query') {
+              logger.debug(
+                {
+                  sql: event.query.sql,
+                  params: event.query.parameters,
+                  duration: event.queryDurationMillis,
+                },
+                'Database query',
+              );
+            } else if (event.level === 'error') {
+              logger.error(
+                {
+                  sql: event.query.sql,
+                  params: event.query.parameters,
+                  error: event.error,
+                },
+                'Database query error',
+              );
+            }
+          },
         }
-      : undefined,
+      : {}),
   });
 }
 

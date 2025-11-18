@@ -33,12 +33,15 @@ export interface Game {
 }
 
 // API Response types
+export interface ApiError {
+  code: string;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
 export interface ApiResponse<T> {
   data: T | null;
-  error: {
-    code: string;
-    message: string;
-  } | null;
+  error: ApiError | null;
   meta?: {
     pagination?: {
       page: number;
@@ -47,10 +50,4 @@ export interface ApiResponse<T> {
     };
     timestamp: string;
   };
-}
-
-export interface ApiError {
-  code: string;
-  message: string;
-  details?: Record<string, unknown>;
 }

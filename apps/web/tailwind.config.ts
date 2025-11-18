@@ -1,5 +1,5 @@
-import type { Config } from 'tailwindcss';
 import sharedConfig from '@games/tailwind-config';
+import type { Config } from 'tailwindcss';
 
 /**
  * Web app Tailwind CSS configuration

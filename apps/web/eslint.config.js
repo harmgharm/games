@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint';
 export default tseslint.config(
   // Ignore patterns
   {
-    ignores: ['dist', '.vinxi', '.output', 'node_modules', '.turbo'],
+    ignores: ['dist', '.vinxi', '.output', 'node_modules', '.turbo', 'src/routeTree.gen.ts'],
   },
 
   // React config for all source files

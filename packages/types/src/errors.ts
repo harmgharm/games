@@ -20,10 +20,16 @@ export class AppError extends Error {
     this.code = code;
     this.statusCode = statusCode;
     this.isOperational = isOperational;
-    this.details = details;
 
-    // Maintains proper stack trace
-    Error.captureStackTrace(this, this.constructor);
+    // Only assign details if provided (exactOptionalPropertyTypes compatibility)
+    if (details !== undefined) {
+      this.details = details;
+    }
+
+    // Maintains proper stack trace (V8 engines only)
+    if ('captureStackTrace' in Error) {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 
   toJSON() {

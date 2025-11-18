@@ -135,7 +135,10 @@ export class ResponseBuilder<T> {
   setError(code: string, message: string, details?: Record<string, unknown>): this {
     this.errorCode = code;
     this.errorMessage = message;
-    this.errorDetails = details;
+    // Only assign if provided (exactOptionalPropertyTypes)
+    if (details !== undefined) {
+      this.errorDetails = details;
+    }
     this.data = null;
     return this;
   }
