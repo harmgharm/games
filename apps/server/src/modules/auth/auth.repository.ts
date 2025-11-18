@@ -67,6 +67,21 @@ export const userRepository = {
   },
 
   /**
+   * Update login info (timestamp, IP, increment count)
+   */
+  async updateLoginInfo(userId: string, ip: string | null): Promise<void> {
+    await db
+      .updateTable('users')
+      .set({
+        last_login_at: new Date(),
+        last_login_ip: ip,
+        login_count: (eb) => eb('login_count', '+', 1),
+      })
+      .where('id', '=', userId)
+      .execute();
+  },
+
+  /**
    * Update email verified status
    */
   async updateEmailVerified(userId: string, verified: boolean): Promise<void> {

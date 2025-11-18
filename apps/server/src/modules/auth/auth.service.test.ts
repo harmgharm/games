@@ -21,6 +21,9 @@ vi.mock('./auth.repository', () => ({
     findById: vi.fn(),
     create: vi.fn(),
     updateLastLogin: vi.fn(),
+    updateLoginInfo: vi.fn(),
+    updateEmailVerified: vi.fn(),
+    updatePassword: vi.fn(),
   },
   sessionRepository: {
     create: vi.fn(),
@@ -30,6 +33,17 @@ vi.mock('./auth.repository', () => ({
     revokeAllForUser: vi.fn(),
     deleteExpired: vi.fn(),
   },
+}));
+
+// Mock the lockout service
+vi.mock('./lockout.service', () => ({
+  createLockoutService: vi.fn().mockReturnValue({
+    checkLockout: vi.fn().mockResolvedValue({ isLocked: false }),
+    recordFailedAttempt: vi.fn().mockResolvedValue({ isLocked: false }),
+    clearFailedAttempts: vi.fn().mockResolvedValue(undefined),
+    getFailedAttemptCount: vi.fn().mockResolvedValue(0),
+  }),
+  formatLockoutTime: vi.fn().mockImplementation((seconds) => `${seconds} seconds`),
 }));
 
 // Mock the email repositories
@@ -223,12 +237,12 @@ describe('auth service', () => {
         created_at: new Date(),
       });
 
-      const result = await authService.login(mockFastify, loginInput, {});
+      const result = await authService.login(mockFastify, loginInput, { ip: '127.0.0.1' });
 
       expect(result.user.id).toBe('user-123');
       expect(result.accessToken).toBe('mock-access-token');
       expect(result.refreshToken).toHaveLength(64);
-      expect(userRepository.updateLastLogin).toHaveBeenCalledWith('user-123');
+      expect(userRepository.updateLoginInfo).toHaveBeenCalledWith('user-123', '127.0.0.1');
     });
 
     it('should throw error for non-existent email', async () => {

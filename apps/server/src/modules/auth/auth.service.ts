@@ -22,6 +22,7 @@ import {
   hashToken,
 } from '../email/email.repository';
 import { sessionRepository, userRepository } from './auth.repository';
+import { createLockoutService, formatLockoutTime } from './lockout.service';
 import { checkPasswordStrength, hashPassword, needsRehash, verifyPassword } from './utils/password';
 import {
   type AccessTokenPayload,
@@ -166,28 +167,73 @@ export async function register(
 export async function login(
   fastify: FastifyInstance,
   input: LoginInput,
-  _metadata: SessionMetadata,
+  metadata: SessionMetadata,
 ): Promise<AuthResult> {
+  const lockoutService = createLockoutService(fastify.redis);
+
+  // Check for Redis lockout first (before even looking up user)
+  const lockoutIdentifier = input.email.toLowerCase();
+  const lockoutStatus = await lockoutService.checkLockout(lockoutIdentifier);
+
+  if (lockoutStatus.isLocked) {
+    const timeRemaining = formatLockoutTime(lockoutStatus.remainingSeconds ?? 0);
+    throw new AppError(
+      `Account temporarily locked. Try again in ${timeRemaining}`,
+      'ACCOUNT_LOCKED',
+      429,
+      true,
+    );
+  }
+
   // Find user by email
   const user = await userRepository.findByEmail(input.email);
   if (user === undefined) {
+    // Record failed attempt even for non-existent users (prevent enumeration timing attacks)
+    await lockoutService.recordFailedAttempt(lockoutIdentifier);
     throw new AppError('Invalid email or password', 'INVALID_CREDENTIALS', 401, true);
+  }
+
+  // Check user status
+  if (user.status !== 'active') {
+    // Return generic error to prevent enumeration
+    throw new AppError('Invalid email or password', 'INVALID_CREDENTIALS', 401, true);
+  }
+
+  // Check for long-term lockout (set by admin or security system)
+  if (user.locked_until !== null && user.locked_until > new Date()) {
+    throw new AppError('Account is locked. Please contact support.', 'ACCOUNT_LOCKED', 403, true);
   }
 
   // Verify password
   const isValid = await verifyPassword(user.password_hash, input.password);
   if (!isValid) {
+    // Record failed attempt
+    const newLockoutStatus = await lockoutService.recordFailedAttempt(lockoutIdentifier);
+
+    if (newLockoutStatus.isLocked) {
+      const timeRemaining = formatLockoutTime(newLockoutStatus.remainingSeconds ?? 0);
+      throw new AppError(
+        `Too many failed attempts. Account locked for ${timeRemaining}`,
+        'ACCOUNT_LOCKED',
+        429,
+        true,
+      );
+    }
+
     throw new AppError('Invalid email or password', 'INVALID_CREDENTIALS', 401, true);
   }
+
+  // Successful login - clear failed attempts
+  await lockoutService.clearFailedAttempts(lockoutIdentifier);
 
   // Check if password needs rehashing (Argon2 options changed)
   if (needsRehash(user.password_hash)) {
     const newHash = await hashPassword(input.password);
-    await userRepository.create({ ...user, password_hash: newHash });
+    await userRepository.updatePassword(user.id, newHash);
   }
 
-  // Update last login
-  await userRepository.updateLastLogin(user.id);
+  // Update login info (timestamp, IP, increment count)
+  await userRepository.updateLoginInfo(user.id, metadata.ip ?? null);
 
   // Generate tokens
   const accessToken = fastify.jwt.sign(

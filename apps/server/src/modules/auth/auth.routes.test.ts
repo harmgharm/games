@@ -30,6 +30,7 @@ vi.mock('./auth.repository', () => ({
     findById: vi.fn(),
     create: vi.fn(),
     updateLastLogin: vi.fn(),
+    updateLoginInfo: vi.fn(),
     updateEmailVerified: vi.fn(),
     updatePassword: vi.fn(),
   },
@@ -41,6 +42,17 @@ vi.mock('./auth.repository', () => ({
     revokeAllForUser: vi.fn(),
     deleteExpired: vi.fn(),
   },
+}));
+
+// Mock the lockout service
+vi.mock('./lockout.service', () => ({
+  createLockoutService: vi.fn().mockReturnValue({
+    checkLockout: vi.fn().mockResolvedValue({ isLocked: false }),
+    recordFailedAttempt: vi.fn().mockResolvedValue({ isLocked: false }),
+    clearFailedAttempts: vi.fn().mockResolvedValue(undefined),
+    getFailedAttemptCount: vi.fn().mockResolvedValue(0),
+  }),
+  formatLockoutTime: vi.fn().mockImplementation((seconds) => `${seconds} seconds`),
 }));
 
 // Mock Redis using ioredis-mock
