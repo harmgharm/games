@@ -59,11 +59,15 @@ export type GameParticipantUpdate = Updateable<GameParticipantsTable>;
 // MATCHMAKING QUEUE
 // ============================================
 
+/**
+ * Matchmaking queue entry
+ * Uses composite primary key (user_id, game_type, match_type)
+ * No UUID id - this is ephemeral data optimized for upserts and dequeues
+ */
 export interface MatchmakingQueueTable {
-  id: Generated<string>;
-  user_id: string; // FK -> users, unique
-  game_type: GameType;
-  match_type: MatchType;
+  user_id: string; // FK -> users, part of composite PK
+  game_type: GameType; // Part of composite PK
+  match_type: MatchType; // Part of composite PK
   elo: number;
   rank_tier_id: string | null; // FK -> rank_tiers
 
