@@ -64,6 +64,21 @@ export default tseslint.config(
       'max-lines': ['warn', 1000],
       // Simpler boolean assertions in tests
       '@typescript-eslint/strict-boolean-expressions': 'off',
+
+      // Test-specific relaxations for mocking patterns
+      // vi.mocked(repo.method) pattern triggers this
+      '@typescript-eslint/unbound-method': 'off',
+      // Tests need hardcoded passwords for auth testing
+      'sonarjs/no-hardcoded-passwords': 'off',
+      // mockResolvedValue(undefined) is required by TypeScript
+      'unicorn/no-useless-undefined': 'off',
+      // JSON.parse() returns any, common in response testing
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      // Numeric separators not needed in test assertions
+      'unicorn/numeric-separators-style': 'off',
+      // Allow abbreviations like 'i' in test loops
+      'unicorn/prevent-abbreviations': 'off',
     },
   },
 );

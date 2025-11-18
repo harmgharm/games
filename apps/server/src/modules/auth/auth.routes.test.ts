@@ -1,12 +1,7 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable sonarjs/no-hardcoded-passwords */
-/* eslint-disable unicorn/no-useless-undefined */
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildServer } from '../../server';
+import { buildServer } from '../../app';
 import { sessionRepository, userRepository } from './auth.repository';
 import { hashPassword } from './utils/password';
 

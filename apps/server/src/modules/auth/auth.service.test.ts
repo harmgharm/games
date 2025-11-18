@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/unbound-method */
-/* eslint-disable sonarjs/no-hardcoded-passwords */
-/* eslint-disable unicorn/no-useless-undefined */
 import { AppError } from '@games/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 

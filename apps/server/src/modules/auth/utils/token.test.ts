@@ -1,5 +1,3 @@
-/* eslint-disable unicorn/numeric-separators-style */
-/* eslint-disable unicorn/prevent-abbreviations */
 import { describe, expect, it, vi } from 'vitest';
 
 import {

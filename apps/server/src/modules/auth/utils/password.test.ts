@@ -1,4 +1,3 @@
-/* eslint-disable sonarjs/no-hardcoded-passwords */
 import { describe, expect, it } from 'vitest';
 
 import { checkPasswordStrength, hashPassword, needsRehash, verifyPassword } from './password';
