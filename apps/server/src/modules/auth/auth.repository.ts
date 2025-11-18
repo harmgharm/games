@@ -5,6 +5,7 @@
  */
 
 import type { NewSession, NewUser, Session, User } from '@games/types';
+import { sql } from 'kysely';
 
 import { db } from '../../db';
 
@@ -99,6 +100,20 @@ export const userRepository = {
     await db
       .updateTable('users')
       .set({ password_hash: passwordHash })
+      .where('id', '=', userId)
+      .execute();
+  },
+
+  /**
+   * Set locked_until for punishment lockout
+   * Uses GREATEST to not reduce an existing longer lockout
+   */
+  async setLockedUntil(userId: string, lockedUntil: Date): Promise<void> {
+    await db
+      .updateTable('users')
+      .set({
+        locked_until: sql`GREATEST(locked_until, ${lockedUntil})`,
+      })
       .where('id', '=', userId)
       .execute();
   },

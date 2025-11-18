@@ -207,8 +207,8 @@ export async function login(
   // Verify password
   const isValid = await verifyPassword(user.password_hash, input.password);
   if (!isValid) {
-    // Record failed attempt
-    const newLockoutStatus = await lockoutService.recordFailedAttempt(lockoutIdentifier);
+    // Record failed attempt with userId for potential punishment lock
+    const newLockoutStatus = await lockoutService.recordFailedAttempt(lockoutIdentifier, user.id);
 
     if (newLockoutStatus.isLocked) {
       const timeRemaining = formatLockoutTime(newLockoutStatus.remainingSeconds ?? 0);

@@ -1,9 +1,18 @@
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { createLockoutService, formatLockoutTime, type LockoutService } from './lockout.service';
 
 // Use ioredis-mock for testing
 import RedisMock from 'ioredis-mock';
+
+// Mock the userRepository
+vi.mock('./auth.repository', () => ({
+  userRepository: {
+    setLockedUntil: vi.fn().mockResolvedValue(undefined),
+  },
+}));
+
+import { userRepository } from './auth.repository';
 
 describe('lockout service', () => {
   let redis: InstanceType<typeof RedisMock>;
@@ -12,6 +21,7 @@ describe('lockout service', () => {
   beforeEach(() => {
     redis = new RedisMock();
     lockoutService = createLockoutService(redis);
+    vi.clearAllMocks();
   });
 
   afterEach(async () => {
@@ -25,9 +35,9 @@ describe('lockout service', () => {
       expect(status.isLocked).toBe(false);
     });
 
-    it('should return locked status when lockout exists', async () => {
-      // Manually set a lockout
-      await redis.setex('auth:lockout:test@example.com', 900, '1');
+    it('should return locked status when short lockout exists', async () => {
+      // Manually set a short lockout
+      await redis.setex('auth:short_lockout:test@example.com', 900, '1');
 
       const status = await lockoutService.checkLockout('test@example.com');
 
@@ -57,7 +67,7 @@ describe('lockout service', () => {
       expect(count).toBe(4);
     });
 
-    it('should lock after 5 attempts', async () => {
+    it('should apply short lockout after 5 attempts', async () => {
       let status;
       for (let i = 0; i < 5; i++) {
         status = await lockoutService.recordFailedAttempt('test@example.com');
@@ -71,7 +81,7 @@ describe('lockout service', () => {
       expect(checkStatus.isLocked).toBe(true);
     });
 
-    it('should clear attempt counter after lockout', async () => {
+    it('should clear attempt counter after short lockout', async () => {
       for (let i = 0; i < 5; i++) {
         await lockoutService.recordFailedAttempt('test@example.com');
       }
@@ -80,34 +90,78 @@ describe('lockout service', () => {
       expect(count).toBe(0); // Counter should be cleared after lockout
     });
 
-    it('should escalate lockout duration on repeated lockouts', async () => {
-      // First lockout - 15 minutes
+    it('should increment offense counter after each short lockout', async () => {
+      // First short lockout
       for (let i = 0; i < 5; i++) {
         await lockoutService.recordFailedAttempt('test@example.com');
       }
 
-      // Clear lockout to simulate time passing
-      await redis.del('auth:lockout:test@example.com');
+      // Check offense count
+      const offenseCount = await redis.get('auth:offense_count:test@example.com');
+      expect(offenseCount).toBe('1');
+    });
 
-      // Second lockout - 1 hour
+    it('should apply punishment lock after 3 offenses when userId provided', async () => {
+      const userId = 'user-123';
+
+      // First offense (5 attempts)
+      for (let i = 0; i < 5; i++) {
+        await lockoutService.recordFailedAttempt('test@example.com', userId);
+      }
+      await redis.del('auth:short_lockout:test@example.com'); // Clear lockout
+
+      // Second offense (5 attempts)
+      for (let i = 0; i < 5; i++) {
+        await lockoutService.recordFailedAttempt('test@example.com', userId);
+      }
+      await redis.del('auth:short_lockout:test@example.com'); // Clear lockout
+
+      // Third offense (5 attempts) - should trigger punishment
       let status;
       for (let i = 0; i < 5; i++) {
-        status = await lockoutService.recordFailedAttempt('test@example.com');
-      }
-
-      expect(status?.isLocked).toBe(true);
-      expect(status?.remainingSeconds).toBe(60 * 60); // 1 hour
-
-      // Clear lockout again
-      await redis.del('auth:lockout:test@example.com');
-
-      // Third lockout - 24 hours
-      for (let i = 0; i < 5; i++) {
-        status = await lockoutService.recordFailedAttempt('test@example.com');
+        status = await lockoutService.recordFailedAttempt('test@example.com', userId);
       }
 
       expect(status?.isLocked).toBe(true);
       expect(status?.remainingSeconds).toBe(24 * 60 * 60); // 24 hours
+      expect(status?.reason).toContain('contact support');
+
+      // Should have called setLockedUntil
+      expect(userRepository.setLockedUntil).toHaveBeenCalledWith(userId, expect.any(Date));
+
+      // Offense counter should be cleared after punishment
+      const offenseCount = await redis.get('auth:offense_count:test@example.com');
+      expect(offenseCount).toBeNull();
+    });
+
+    it('should not apply punishment lock without userId', async () => {
+      // Three offenses without userId
+      for (let offense = 0; offense < 3; offense++) {
+        for (let i = 0; i < 5; i++) {
+          await lockoutService.recordFailedAttempt('test@example.com');
+        }
+        await redis.del('auth:short_lockout:test@example.com');
+      }
+
+      // Should not have called setLockedUntil
+      expect(userRepository.setLockedUntil).not.toHaveBeenCalled();
+    });
+
+    it('should apply short lockout for third offense without userId', async () => {
+      // Three offenses without userId
+      let status;
+      for (let offense = 0; offense < 3; offense++) {
+        for (let i = 0; i < 5; i++) {
+          status = await lockoutService.recordFailedAttempt('test@example.com');
+        }
+        if (offense < 2) {
+          await redis.del('auth:short_lockout:test@example.com');
+        }
+      }
+
+      // Should still apply short lockout (not punishment)
+      expect(status?.isLocked).toBe(true);
+      expect(status?.remainingSeconds).toBe(15 * 60); // Still 15 minutes
     });
   });
 
@@ -123,6 +177,20 @@ describe('lockout service', () => {
 
       const count = await lockoutService.getFailedAttemptCount('test@example.com');
       expect(count).toBe(0);
+    });
+
+    it('should not clear offense counter on successful login', async () => {
+      // Record a full offense
+      for (let i = 0; i < 5; i++) {
+        await lockoutService.recordFailedAttempt('test@example.com');
+      }
+
+      // Clear failed attempts
+      await lockoutService.clearFailedAttempts('test@example.com');
+
+      // Offense counter should still exist
+      const offenseCount = await redis.get('auth:offense_count:test@example.com');
+      expect(offenseCount).toBe('1');
     });
   });
 

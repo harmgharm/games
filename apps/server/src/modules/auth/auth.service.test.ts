@@ -24,6 +24,7 @@ vi.mock('./auth.repository', () => ({
     updateLoginInfo: vi.fn(),
     updateEmailVerified: vi.fn(),
     updatePassword: vi.fn(),
+    setLockedUntil: vi.fn(),
   },
   sessionRepository: {
     create: vi.fn(),
