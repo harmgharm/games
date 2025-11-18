@@ -34,12 +34,12 @@ async function buildServer() {
   });
 
   // Health check route
-  fastify.get('/health', async () => {
+  fastify.get('/health', () => {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
 
   // API version route
-  fastify.get('/api/v1', async () => {
+  fastify.get('/api/v1', () => {
     return {
       name: '@games/server',
       version: '0.0.0',
@@ -53,20 +53,15 @@ async function buildServer() {
 /**
  * Start the server
  */
-async function start() {
-  try {
-    const server = await buildServer();
+async function start(): Promise<void> {
+  const server = await buildServer();
 
-    await server.listen({
-      port: env.PORT,
-      host: env.HOST,
-    });
+  await server.listen({
+    port: env.PORT,
+    host: env.HOST,
+  });
 
-    console.log(`🚀 Server running at http://${env.HOST}:${env.PORT}`);
-  } catch (error) {
-    console.error('Failed to start server:', error);
-    process.exit(1);
-  }
+  server.log.info(`Server running at http://${env.HOST}:${String(env.PORT)}`);
 }
 
-start();
+void start();

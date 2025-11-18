@@ -1,7 +1,7 @@
-import type { FastifyInstance, FastifyError } from 'fastify';
+import type { ApiResponse, AppError } from '@games/types';
+import { isAppError } from '@games/types';
+import type { FastifyError, FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
-import { isAppError, type AppError } from '@games/types';
-import type { ApiResponse } from '@games/types';
 
 /**
  * Global error handler plugin for Fastify
@@ -11,13 +11,13 @@ import type { ApiResponse } from '@games/types';
  * - Fastify validation errors
  * - Unknown errors (converted to 500)
  */
-async function errorHandlerPlugin(fastify: FastifyInstance): Promise<void> {
+function errorHandlerPlugin(fastify: FastifyInstance): void {
   fastify.setErrorHandler((error, request, reply) => {
     const logger = request.log;
 
     // Handle our custom AppError instances
     if (isAppError(error)) {
-      const appError = error as AppError;
+      const appError: AppError = error;
 
       // Log operational errors as warnings, programming errors as errors
       if (appError.isOperational) {
@@ -53,7 +53,7 @@ async function errorHandlerPlugin(fastify: FastifyInstance): Promise<void> {
     }
 
     // Handle Fastify validation errors
-    if ((error as FastifyError).validation) {
+    if ((error as FastifyError).validation !== undefined) {
       const validationError = error as FastifyError;
 
       logger.warn(
@@ -93,13 +93,13 @@ async function errorHandlerPlugin(fastify: FastifyInstance): Promise<void> {
     );
 
     // Don't expose internal error details in production
-    const isProd = process.env.NODE_ENV === 'production';
+    const isProduction = process.env.NODE_ENV === 'production';
     const response: ApiResponse<null> = {
       data: null,
       error: {
         code: 'INTERNAL_ERROR',
-        message: isProd ? 'An unexpected error occurred' : errorMessage,
-        ...(isProd || errorStack === undefined ? {} : { details: { stack: errorStack } }),
+        message: isProduction ? 'An unexpected error occurred' : errorMessage,
+        ...(isProduction || errorStack === undefined ? {} : { details: { stack: errorStack } }),
       },
       meta: {
         timestamp: new Date().toISOString(),

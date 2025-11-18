@@ -1,5 +1,3 @@
-import { z } from 'zod';
-
 import {
   databaseUrlSchema,
   jwtSecretSchema,
@@ -7,6 +5,7 @@ import {
   portSchema,
   redisUrlSchema,
 } from '@games/validation/env';
+import { z } from 'zod';
 
 /**
  * Server environment variables schema

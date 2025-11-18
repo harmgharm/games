@@ -6,31 +6,7 @@
 export * from './errors';
 
 // Database types
-export * from './database';
-
-// User types
-export interface User {
-  id: string;
-  email: string;
-  username: string;
-  avatarUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-// Game types
-export type GameType = 'trivia' | 'word' | 'card' | 'board';
-
-export type GameStatus = 'waiting' | 'in_progress' | 'completed' | 'cancelled';
-
-export interface Game {
-  id: string;
-  type: GameType;
-  status: GameStatus;
-  createdAt: Date;
-  updatedAt: Date;
-  finishedAt?: Date;
-}
+export * from './database/index';
 
 // API Response types
 export interface ApiError {

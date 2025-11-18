@@ -1,5 +1,5 @@
-import type { FastifyReply } from 'fastify';
 import type { ApiResponse } from '@games/types';
+import type { FastifyReply } from 'fastify';
 
 /**
  * Pagination metadata for list responses
@@ -40,19 +40,19 @@ export function createPaginationMeta(page: number, limit: number, total: number)
  * });
  * ```
  */
-export function sendSuccess<T>(
+export function sendSuccess(
   reply: FastifyReply,
-  data: T,
+  data: unknown,
   meta?: {
     pagination?: PaginationMeta;
   },
 ): FastifyReply {
-  const response: ApiResponse<T> = {
+  const response: ApiResponse<unknown> = {
     data,
     error: null,
     meta: {
       timestamp: new Date().toISOString(),
-      ...(meta?.pagination ? { pagination: meta.pagination } : {}),
+      ...(meta?.pagination === undefined ? {} : { pagination: meta.pagination }),
     },
   };
 
@@ -62,8 +62,8 @@ export function sendSuccess<T>(
 /**
  * Sends a successful creation response (201)
  */
-export function sendCreated<T>(reply: FastifyReply, data: T): FastifyReply {
-  const response: ApiResponse<T> = {
+export function sendCreated(reply: FastifyReply, data: unknown): FastifyReply {
+  const response: ApiResponse<unknown> = {
     data,
     error: null,
     meta: {
@@ -82,33 +82,41 @@ export function sendNoContent(reply: FastifyReply): FastifyReply {
 }
 
 /**
+ * Error response options
+ */
+export interface SendErrorOptions {
+  statusCode: number;
+  code: string;
+  message: string;
+  details?: Record<string, unknown>;
+}
+
+/**
  * Sends an error response
  *
  * @example
  * ```typescript
- * return sendError(reply, 400, 'VALIDATION_ERROR', 'Invalid input');
+ * return sendError(reply, {
+ *   statusCode: 400,
+ *   code: 'VALIDATION_ERROR',
+ *   message: 'Invalid input'
+ * });
  * ```
  */
-export function sendError(
-  reply: FastifyReply,
-  statusCode: number,
-  code: string,
-  message: string,
-  details?: Record<string, unknown>,
-): FastifyReply {
+export function sendError(reply: FastifyReply, options: SendErrorOptions): FastifyReply {
   const response: ApiResponse<null> = {
     data: null,
     error: {
-      code,
-      message,
-      ...(details ? { details } : {}),
+      code: options.code,
+      message: options.message,
+      ...(options.details === undefined ? {} : { details: options.details }),
     },
     meta: {
       timestamp: new Date().toISOString(),
     },
   };
 
-  return reply.status(statusCode).send(response);
+  return reply.status(options.statusCode).send(response);
 }
 
 /**
@@ -152,16 +160,16 @@ export class ResponseBuilder<T> {
     const response: ApiResponse<T> = {
       data: this.data,
       error:
-        this.errorCode && this.errorMessage
+        this.errorCode !== null && this.errorMessage !== null
           ? {
               code: this.errorCode,
               message: this.errorMessage,
-              ...(this.errorDetails ? { details: this.errorDetails } : {}),
+              ...(this.errorDetails === undefined ? {} : { details: this.errorDetails }),
             }
           : null,
       meta: {
         timestamp: new Date().toISOString(),
-        ...(this.pagination ? { pagination: this.pagination } : {}),
+        ...(this.pagination === undefined ? {} : { pagination: this.pagination }),
       },
     };
 
