@@ -12,7 +12,10 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@games/shared": "workspace:*",
+    "@games/constants": "workspace:*",
+    "@games/types": "workspace:*",
+    "@games/utils": "workspace:*",
+    "@t3-oss/env-core": "^0.11.1",
     "@tailwindcss/vite": "^4.0.6",
     "@tanstack/react-devtools": "^0.7.0",
     "@tanstack/react-form": "^0.42.0",

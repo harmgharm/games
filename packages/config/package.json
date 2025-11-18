@@ -1,0 +1,34 @@
+{
+  "name": "@games/config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Server configuration factories (logger, db, redis)",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./logger": {
+      "import": "./src/logger.ts",
+      "types": "./src/logger.ts"
+    },
+    "./database": {
+      "import": "./src/database.ts",
+      "types": "./src/database.ts"
+    },
+    "./redis": {
+      "import": "./src/redis.ts",
+      "types": "./src/redis.ts"
+    }
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@games/typescript-config": "workspace:*",
+    "typescript": "^5.7.2"
+  }
+}
