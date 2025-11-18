@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@games/constants": "workspace:*",
+    "@games/tailwind-config": "workspace:*",
     "@games/types": "workspace:*",
     "@games/utils": "workspace:*",
     "@t3-oss/env-core": "^0.11.1",
@@ -40,6 +41,7 @@
     "@games/typescript-config": "workspace:*",
     "@tanstack/devtools-vite": "^0.3.11",
     "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@types/node": "^22.10.2",
     "@types/react": "^19.2.0",
