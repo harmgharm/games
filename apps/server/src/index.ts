@@ -3,6 +3,10 @@ import helmet from '@fastify/helmet';
 import Fastify from 'fastify';
 
 import { env } from './config/env';
+import { authRoutes } from './modules/auth/auth.routes';
+import authPlugin from './plugins/auth.plugin';
+import errorHandler from './plugins/error-handler';
+import rateLimitPlugin, { AUTH_RATE_LIMITS } from './plugins/rate-limit.plugin';
 
 /**
  * Create and configure Fastify server
@@ -26,12 +30,17 @@ async function buildServer() {
     },
   });
 
-  // Register plugins
+  // Register core plugins
   await fastify.register(helmet);
   await fastify.register(cors, {
     origin: env.CORS_ORIGIN,
     credentials: true,
   });
+
+  // Register custom plugins
+  await fastify.register(errorHandler);
+  await fastify.register(authPlugin);
+  await fastify.register(rateLimitPlugin);
 
   // Health check route
   fastify.get('/health', () => {
@@ -46,6 +55,45 @@ async function buildServer() {
       environment: env.NODE_ENV,
     };
   });
+
+  // Register auth routes with rate limiting
+  await fastify.register(
+    async (app) => {
+      // Apply rate limits to specific routes
+      app.addHook('onRoute', (routeOptions) => {
+        switch (routeOptions.url) {
+          case '/register': {
+            routeOptions.config = {
+              ...routeOptions.config,
+              rateLimit: AUTH_RATE_LIMITS.register,
+            };
+
+            break;
+          }
+          case '/login': {
+            routeOptions.config = {
+              ...routeOptions.config,
+              rateLimit: AUTH_RATE_LIMITS.login,
+            };
+
+            break;
+          }
+          case '/refresh': {
+            routeOptions.config = {
+              ...routeOptions.config,
+              rateLimit: AUTH_RATE_LIMITS.refresh,
+            };
+
+            break;
+          }
+          // No default
+        }
+      });
+
+      await app.register(authRoutes);
+    },
+    { prefix: '/api/v1/auth' },
+  );
 
   return fastify;
 }
