@@ -9,6 +9,7 @@ export type GameStatus = 'waiting' | 'in_progress' | 'completed' | 'cancelled';
 export type MatchType = 'casual' | 'ranked';
 export type FriendshipStatus = 'pending' | 'accepted';
 export type MessageType = 'direct' | 'game';
+export type UserStatus = 'active' | 'banned' | 'disabled' | 'deleted';
 
 // ============================================
 // COMMON COLUMN PATTERNS

@@ -1,6 +1,6 @@
 import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
-import type { GameType, SoftDeleteColumn, TimestampColumns } from './common';
+import type { GameType, SoftDeleteColumn, TimestampColumns, UserStatus } from './common';
 
 // ============================================
 // USERS
@@ -17,8 +17,15 @@ export interface UsersTable extends TimestampColumns, SoftDeleteColumn {
 
   // Auth & security
   email_verified: Generated<boolean>;
-  is_verified: Generated<boolean>; // verified badge
+  identity_verified: Generated<boolean>; // checkmark verification for notable accounts
   last_login_at: Date | null;
+  last_login_ip: string | null;
+  login_count: Generated<number>;
+  locked_until: Date | null;
+
+  // Account status & privacy
+  status: Generated<UserStatus>;
+  is_public: Generated<boolean>;
 }
 
 export type User = Selectable<UsersTable>;

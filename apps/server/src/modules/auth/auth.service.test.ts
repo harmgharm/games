@@ -81,8 +81,13 @@ function createMockUser(
     avatar_url: string | null;
     bio: string | null;
     email_verified: boolean;
-    is_verified: boolean;
+    identity_verified: boolean;
     last_login_at: Date | null;
+    last_login_ip: string | null;
+    login_count: number;
+    locked_until: Date | null;
+    status: 'active' | 'banned' | 'disabled' | 'deleted';
+    is_public: boolean;
     created_at: Date;
     updated_at: Date | null;
     deleted_at: Date | null;
@@ -97,8 +102,13 @@ function createMockUser(
     bio: null as string | null,
     avatar_url: null as string | null,
     email_verified: false,
-    is_verified: false,
+    identity_verified: false,
     last_login_at: null as Date | null,
+    last_login_ip: null as string | null,
+    login_count: 0,
+    locked_until: null as Date | null,
+    status: 'active' as const,
+    is_public: true,
     created_at: new Date(),
     updated_at: new Date() as Date | null,
     deleted_at: null as Date | null,
@@ -382,7 +392,7 @@ describe('auth service', () => {
         display_name: 'Test User',
         avatar_url: 'https://example.com/avatar.jpg',
         email_verified: true,
-        is_verified: true,
+        identity_verified: true,
         created_at: new Date('2024-01-01'),
       });
 
@@ -396,7 +406,7 @@ describe('auth service', () => {
       expect(result.displayName).toBe('Test User');
       expect(result.avatarUrl).toBe('https://example.com/avatar.jpg');
       expect(result.emailVerified).toBe(true);
-      expect(result.isVerified).toBe(true);
+      expect(result.identityVerified).toBe(true);
       expect(result.createdAt).toEqual(new Date('2024-01-01'));
     });
 

@@ -97,8 +97,13 @@ function createMockUser(
     avatar_url: string | null;
     bio: string | null;
     email_verified: boolean;
-    is_verified: boolean;
+    identity_verified: boolean;
     last_login_at: Date | null;
+    last_login_ip: string | null;
+    login_count: number;
+    locked_until: Date | null;
+    status: 'active' | 'banned' | 'disabled' | 'deleted';
+    is_public: boolean;
     created_at: Date;
     updated_at: Date | null;
     deleted_at: Date | null;
@@ -113,8 +118,13 @@ function createMockUser(
     bio: null as string | null,
     avatar_url: null as string | null,
     email_verified: false,
-    is_verified: false,
+    identity_verified: false,
     last_login_at: null as Date | null,
+    last_login_ip: null as string | null,
+    login_count: 0,
+    locked_until: null as Date | null,
+    status: 'active' as const,
+    is_public: true,
     created_at: new Date(),
     updated_at: new Date() as Date | null,
     deleted_at: null as Date | null,

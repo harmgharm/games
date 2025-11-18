@@ -298,7 +298,7 @@ export async function getCurrentUser(userId: string) {
     displayName: user.display_name,
     avatarUrl: user.avatar_url,
     emailVerified: user.email_verified,
-    isVerified: user.is_verified,
+    identityVerified: user.identity_verified,
     createdAt: user.created_at,
   };
 }
