@@ -1,6 +1,15 @@
 /**
- * Database exports
+ * Database Module
+ *
+ * Public exports for database access.
  */
 
-// Re-export from config for convenience
-export { checkDatabaseHealth, closeDatabase, createDatabase } from '@games/config';
+// Client
+export { checkDatabaseConnection, closeDatabase, db } from './client';
+
+// Transactions
+export type { DatabaseTransaction } from './transaction';
+export { withTransaction } from './transaction';
+
+// Queries
+export * from './queries';

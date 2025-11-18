@@ -13,7 +13,10 @@
     "lint": "eslint src",
     "test": "vitest",
     "db:migrate": "tsx src/db/migrate.ts",
-    "db:migrate:down": "tsx src/db/migrate.ts down"
+    "db:migrate:down": "tsx src/db/migrate.ts down",
+    "db:migrate:status": "tsx src/db/migrate.ts status",
+    "db:seed": "tsx src/db/seed.ts",
+    "db:seed:reset": "tsx src/db/seed.ts reset"
   },
   "devDependencies": {
     "@games/eslint-config": "workspace:*",
