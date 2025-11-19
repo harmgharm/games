@@ -10,7 +10,7 @@
 
 import { createLogger } from '@games/utils';
 
-import { env } from './config/env';
+import { env } from './config';
 import { startEmailWorker } from './modules/email/email.processor';
 
 const log = createLogger('Worker');

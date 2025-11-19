@@ -7,7 +7,7 @@
 import { createLogger } from '@games/utils';
 import { ServerClient } from 'postmark';
 
-import { env } from '../../config/env';
+import { env } from '../../config';
 import { passwordResetEmail, verificationEmail, welcomeEmail } from './email.templates';
 
 const log = createLogger('Email');

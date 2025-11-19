@@ -9,7 +9,7 @@ import fastifyJwt from '@fastify/jwt';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
 
-import { env } from '../config/env';
+import { env } from '../config';
 import { db } from '../db';
 
 /**

@@ -9,7 +9,7 @@ import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 import Redis from 'ioredis';
 
-import { env } from '../config/env';
+import { env } from '../config';
 
 // Extend Fastify types
 declare module 'fastify' {

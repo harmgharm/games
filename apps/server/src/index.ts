@@ -1,5 +1,5 @@
 import { buildServer } from './app';
-import { env } from './config/env';
+import { env } from './config';
 
 /**
  * Start the server with graceful shutdown handling

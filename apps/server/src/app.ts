@@ -2,8 +2,7 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import Fastify, { type FastifyInstance } from 'fastify';
 
-import { API_PREFIX } from './config/constants';
-import { env } from './config/env';
+import { API_PREFIX, env } from './config';
 import { authRoutes } from './modules/auth/auth.routes';
 import { emailRoutes } from './modules/email';
 import { usersRoutes } from './modules/users';
