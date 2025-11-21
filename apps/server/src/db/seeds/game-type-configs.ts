@@ -6,7 +6,10 @@
  */
 
 import type { Database, GameType, SettingValidationJson } from '@games/types';
+import { createLogger } from '@games/utils';
 import type { Kysely } from 'kysely';
+
+const log = createLogger('Seed:GameTypeConfigs');
 
 export interface GameTypeConfigSeed {
   game_type: GameType;
@@ -111,8 +114,7 @@ export async function seedGameTypeConfigs(db: Kysely<Database>): Promise<void> {
   const existing = await db.selectFrom('game_type_configs').select('id').limit(1).execute();
 
   if (existing.length > 0) {
-    // eslint-disable-next-line no-console
-    console.log('  ⏭️  Game type configs already seeded, skipping');
+    log.info('  ⏭️  Game type configs already seeded, skipping');
     return;
   }
 
@@ -124,6 +126,5 @@ export async function seedGameTypeConfigs(db: Kysely<Database>): Promise<void> {
 
   await db.insertInto('game_type_configs').values(values).execute();
 
-  // eslint-disable-next-line no-console
-  console.log(`  ✅ Seeded ${String(defaultGameTypeConfigs.length)} game type configs`);
+  log.info(`  ✅ Seeded ${String(defaultGameTypeConfigs.length)} game type configs`);
 }

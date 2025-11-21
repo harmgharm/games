@@ -6,7 +6,10 @@
  */
 
 import type { Database } from '@games/types';
+import { createLogger } from '@games/utils';
 import type { Kysely } from 'kysely';
+
+const log = createLogger('Seed:RankTiers');
 
 export interface RankTierSeed {
   name: string;
@@ -50,13 +53,11 @@ export async function seedRankTiers(db: Kysely<Database>): Promise<void> {
   const existing = await db.selectFrom('rank_tiers').select('id').limit(1).execute();
 
   if (existing.length > 0) {
-    // eslint-disable-next-line no-console
-    console.log('  ⏭️  Rank tiers already seeded, skipping');
+    log.info('  ⏭️  Rank tiers already seeded, skipping');
     return;
   }
 
   await db.insertInto('rank_tiers').values(defaultRankTiers).execute();
 
-  // eslint-disable-next-line no-console
-  console.log(`  ✅ Seeded ${String(defaultRankTiers.length)} rank tiers`);
+  log.info(`  ✅ Seeded ${String(defaultRankTiers.length)} rank tiers`);
 }
