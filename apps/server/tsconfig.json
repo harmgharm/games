@@ -1,8 +1,11 @@
 {
-  "extends": "@games/typescript-config/base.json",
+  "extends": "@games/typescript-config/node.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDir": "./src",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
   "include": ["src"]
 }
