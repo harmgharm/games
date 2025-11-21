@@ -1,6 +1,6 @@
 import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
-import type { MessageType, SoftDeleteColumn, TimestampColumns } from './common';
+import type { MessageType, SoftDeleteColumn, TimestampColumns } from './common.js';
 
 // ============================================
 // CONVERSATIONS

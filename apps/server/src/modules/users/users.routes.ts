@@ -13,7 +13,7 @@ import {
 import type { FastifyInstance } from 'fastify';
 
 import { sendAccountRecoveryEmail } from '@/modules/email/email.service.js';
-import * as deletionService from './deletion.service.js';
+import { deletionService } from './deletion.service.js';
 import * as usersService from './users.service.js';
 
 /**

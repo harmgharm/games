@@ -7,8 +7,8 @@
 import { AppError } from '@games/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { usersRepository } from './users.repository';
-import * as usersService from './users.service';
+import { usersRepository } from './users.repository.js';
+import * as usersService from './users.service.js';
 
 // Mock the repository
 vi.mock('./users.repository', () => ({

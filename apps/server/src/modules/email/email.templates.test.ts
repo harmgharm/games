@@ -6,7 +6,7 @@
 
 import { describe, expect, it } from 'vitest';
 
-import { passwordResetEmail, verificationEmail, welcomeEmail } from './email.templates';
+import { passwordResetEmail, verificationEmail, welcomeEmail } from './email.templates.js';
 
 describe('email templates', () => {
   describe('verificationEmail', () => {

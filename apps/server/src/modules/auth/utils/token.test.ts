@@ -7,7 +7,7 @@ import {
   hashRefreshToken,
   REFRESH_TOKEN_COOKIE,
   TOKEN_EXPIRY,
-} from './token';
+} from './token.js';
 
 describe('token utils', () => {
   describe('TOKEN_EXPIRY', () => {

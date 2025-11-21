@@ -2,6 +2,6 @@
  * Auth Validation Schemas
  */
 
-export * from './register.schema';
-export * from './login.schema';
-export * from './refresh.schema';
+export * from './register.schema.js';
+export * from './login.schema.js';
+export * from './refresh.schema.js';

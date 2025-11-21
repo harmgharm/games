@@ -1,10 +1,10 @@
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildServer } from '../../app';
-import { emailTokenRepository } from '../email/email.repository';
-import { sessionRepository, userRepository } from './auth.repository';
-import { hashPassword } from './utils/password';
+import { buildServer } from '../../app.js';
+import { emailTokenRepository } from '../email/email.repository.js';
+import { sessionRepository, userRepository } from './auth.repository.js';
+import { hashPassword } from './utils/password.js';
 
 // Mock env before any imports that use it
 vi.mock('../../config/env', () => ({

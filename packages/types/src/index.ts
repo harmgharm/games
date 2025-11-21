@@ -3,10 +3,10 @@
  */
 
 // Error types
-export * from './errors';
+export * from './errors.js';
 
 // Database types
-export * from './db/index';
+export * from './db/index.js';
 
 // API Response types
 export interface ApiError {

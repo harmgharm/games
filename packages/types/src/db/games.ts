@@ -8,7 +8,7 @@ import type {
   MatchType,
   SoftDeleteColumn,
   TimestampColumns,
-} from './common';
+} from './common.js';
 
 // ============================================
 // GAMES

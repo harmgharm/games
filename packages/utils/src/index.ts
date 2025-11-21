@@ -2,7 +2,7 @@
  * Shared utility functions
  */
 
-export * from './logger';
+export * from './logger.js';
 
 /**
  * Type-safe object keys helper

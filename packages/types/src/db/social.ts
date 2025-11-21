@@ -1,6 +1,6 @@
 import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
-import type { FriendshipStatus, TimestampColumns } from './common';
+import type { FriendshipStatus, TimestampColumns } from './common.js';
 
 // ============================================
 // FRIENDSHIPS (Bidirectional - both must accept)

@@ -1,6 +1,6 @@
 import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
-import type { GameType, JsonColumn, SettingValidationJson } from './common';
+import type { GameType, JsonColumn, SettingValidationJson } from './common.js';
 
 // ============================================
 // RANK TIERS (Lookup table for flexibility)

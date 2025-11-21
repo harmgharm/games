@@ -3,7 +3,7 @@
  */
 
 // Logger factory
-export * from './logger';
+export * from './logger.js';
 
 // Database factory
-export * from './database';
+export * from './database.js';

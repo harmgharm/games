@@ -2,7 +2,7 @@
  * User Validation Schemas
  */
 
-export * from './profile.schema';
-export * from './search.schema';
-export * from './delete.schema';
-export * from './recover.schema';
+export * from './profile.schema.js';
+export * from './search.schema.js';
+export * from './delete.schema.js';
+export * from './recover.schema.js';

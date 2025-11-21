@@ -1,9 +1,9 @@
 import { AppError } from '@games/types';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { sessionRepository, userRepository } from './auth.repository';
-import * as authService from './auth.service';
-import { hashPassword } from './utils/password';
+import { sessionRepository, userRepository } from './auth.repository.js';
+import * as authService from './auth.service.js';
+import { hashPassword } from './utils/password.js';
 
 // Mock Redis using ioredis-mock
 vi.mock('ioredis', async () => {

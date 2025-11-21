@@ -4,37 +4,37 @@
  */
 
 // Common types and enums
-export * from './common';
+export * from './common.js';
 
 // Lookup tables
-export * from './lookup';
+export * from './lookup.js';
 
 // Domain tables
-export * from './users';
-export * from './games';
-export * from './social';
-export * from './chat';
-export * from './notifications';
+export * from './users.js';
+export * from './games.js';
+export * from './social.js';
+export * from './chat.js';
+export * from './notifications.js';
 
 // Import table types for Database interface
-import type { RankTiersTable, GameTypeConfigsTable } from './lookup';
+import type { RankTiersTable, GameTypeConfigsTable } from './lookup.js';
 import type {
   UsersTable,
   UserEloTable,
   SessionsTable,
   EmailTokensTable,
   ReservedUsernamesTable,
-} from './users';
-import type { GamesTable, GameParticipantsTable, MatchmakingQueueTable } from './games';
-import type { FriendshipsTable, BlocksTable, MutesTable } from './social';
-import type { ConversationsTable, ConversationParticipantsTable, MessagesTable } from './chat';
+} from './users.js';
+import type { GamesTable, GameParticipantsTable, MatchmakingQueueTable } from './games.js';
+import type { FriendshipsTable, BlocksTable, MutesTable } from './social.js';
+import type { ConversationsTable, ConversationParticipantsTable, MessagesTable } from './chat.js';
 import type {
   GameInviteNotificationsTable,
   FriendRequestNotificationsTable,
   MatchFoundNotificationsTable,
   MessageNotificationsTable,
   GameResultNotificationsTable,
-} from './notifications';
+} from './notifications.js';
 
 // ============================================
 // DATABASE INTERFACE

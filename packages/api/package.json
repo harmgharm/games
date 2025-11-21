@@ -18,8 +18,8 @@
   },
   "devDependencies": {
     "@games/typescript-config": "workspace:*",
-    "typescript": "^5.7.2",
-    "vitest": "^2.1.8"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.12"
   },
   "dependencies": {
     "@games/types": "workspace:*"

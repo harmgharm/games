@@ -1,6 +1,6 @@
 import type { Generated, Insertable, Selectable, Updateable } from 'kysely';
 
-import type { GameType, SoftDeleteColumn, TimestampColumns, UserStatus } from './common';
+import type { GameType, SoftDeleteColumn, TimestampColumns, UserStatus } from './common.js';
 
 // ============================================
 // USERS

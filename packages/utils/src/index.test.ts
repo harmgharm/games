@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { clamp, entries, keys, sleep } from './index';
+import { clamp, entries, keys, sleep } from './index.js';
 
 describe('utils', () => {
   describe('keys', () => {

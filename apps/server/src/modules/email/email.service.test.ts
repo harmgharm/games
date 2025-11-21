@@ -6,7 +6,7 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail } from './email.service';
+import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail } from './email.service.js';
 
 // Mock the env config (vi.mock is hoisted automatically)
 vi.mock('../../config/env', () => ({

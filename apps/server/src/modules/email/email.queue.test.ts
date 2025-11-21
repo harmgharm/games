@@ -7,7 +7,7 @@
 import type { FastifyInstance } from 'fastify';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { createEmailQueue } from './email.queue';
+import { createEmailQueue } from './email.queue.js';
 
 describe('email queue', () => {
   let mockFastify: FastifyInstance;

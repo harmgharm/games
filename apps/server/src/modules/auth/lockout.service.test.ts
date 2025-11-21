@@ -1,25 +1,26 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { Redis } from 'ioredis';
 
-import { createLockoutService, formatLockoutTime, type LockoutService } from './lockout.service';
+import { createLockoutService, formatLockoutTime, type LockoutService } from './lockout.service.js';
 
 // Use ioredis-mock for testing
 import RedisMock from 'ioredis-mock';
 
 // Mock the userRepository
-vi.mock('./auth.repository', () => ({
+vi.mock('./auth.repository.js', () => ({
   userRepository: {
     setLockedUntil: vi.fn().mockResolvedValue(undefined),
   },
 }));
 
-import { userRepository } from './auth.repository';
+import { userRepository } from './auth.repository.js';
 
 describe('lockout service', () => {
-  let redis: InstanceType<typeof RedisMock>;
+  let redis: Redis;
   let lockoutService: LockoutService;
 
   beforeEach(() => {
-    redis = new RedisMock();
+    redis = new (RedisMock as any)() as Redis;
     lockoutService = createLockoutService(redis);
     vi.clearAllMocks();
   });

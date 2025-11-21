@@ -7,7 +7,7 @@ import {
   portSchema,
   redisUrlSchema,
   urlSchema,
-} from './env';
+} from './env.js';
 
 describe('env schemas', () => {
   describe('nodeEnvSchema', () => {

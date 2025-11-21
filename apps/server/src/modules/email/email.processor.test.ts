@@ -7,9 +7,9 @@
 import type { Job } from 'bullmq';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import type { EmailJobData } from '../../plugins/queue.plugin';
-import { processEmailJob } from './email.processor';
-import * as emailService from './email.service';
+import type { EmailJobData } from '../../plugins/queue.plugin.js';
+import { processEmailJob } from './email.processor.js';
+import * as emailService from './email.service.js';
 
 // Mock the email service
 vi.mock('./email.service', () => ({

@@ -8,7 +8,7 @@ import crypto from 'node:crypto';
 
 import { describe, expect, it } from 'vitest';
 
-import { generateCode, generateToken, hashToken } from './email.repository';
+import { generateCode, generateToken, hashToken } from './email.repository.js';
 
 describe('email repository utilities', () => {
   describe('hashToken', () => {

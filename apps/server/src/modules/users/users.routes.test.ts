@@ -7,8 +7,8 @@
 import type { FastifyInstance } from 'fastify';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { buildServer } from '../../app';
-import { usersRepository } from './users.repository';
+import { buildServer } from '../../app.js';
+import { usersRepository } from './users.repository.js';
 
 // Mock Redis using ioredis-mock
 vi.mock('ioredis', async () => {
