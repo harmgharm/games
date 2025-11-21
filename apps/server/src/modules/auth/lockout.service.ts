@@ -9,7 +9,7 @@
 
 import type { Redis } from 'ioredis';
 
-import { userRepository } from './auth.repository';
+import { userRepository } from './auth.repository.js';
 
 /**
  * Lockout configuration

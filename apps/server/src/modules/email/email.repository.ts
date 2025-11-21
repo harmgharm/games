@@ -6,7 +6,7 @@
 
 import crypto from 'node:crypto';
 
-import { db } from '../../db/client';
+import { db } from '@/db/client.js';
 
 /**
  * Email token types

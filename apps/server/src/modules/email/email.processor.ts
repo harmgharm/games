@@ -7,9 +7,13 @@
 import { createLogger } from '@games/utils';
 import type { Job, Worker } from 'bullmq';
 
-import type { EmailJobData } from '../../plugins/queue.plugin';
-import { createEmailWorker } from '../../plugins/queue.plugin';
-import { sendPasswordResetEmail, sendVerificationEmail, sendWelcomeEmail } from './email.service';
+import type { EmailJobData } from '@/plugins/queue.plugin.js';
+import { createEmailWorker } from '@/plugins/queue.plugin.js';
+import {
+  sendPasswordResetEmail,
+  sendVerificationEmail,
+  sendWelcomeEmail,
+} from './email.service.js';
 
 const log = createLogger('EmailWorker');
 

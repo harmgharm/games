@@ -13,9 +13,9 @@ import {
 } from '@games/validation';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-import { sendCreated, sendNoContent, sendSuccess } from '../../utils/response';
-import * as authService from './auth.service';
-import { getRefreshTokenMaxAge, REFRESH_TOKEN_COOKIE } from './utils/token';
+import { sendCreated, sendNoContent, sendSuccess } from '@/utils/response.js';
+import * as authService from './auth.service.js';
+import { getRefreshTokenMaxAge, REFRESH_TOKEN_COOKIE } from './utils/token.js';
 
 /**
  * Register auth routes

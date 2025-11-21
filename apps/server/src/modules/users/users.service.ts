@@ -14,7 +14,7 @@ import type {
   UserSearchResult,
 } from '@games/validation';
 
-import { usersRepository } from './users.repository';
+import { usersRepository } from './users.repository.js';
 
 /**
  * Get public user profile by ID

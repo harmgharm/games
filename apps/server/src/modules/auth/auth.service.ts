@@ -14,23 +14,28 @@ import type {
 } from '@games/validation';
 import type { FastifyInstance } from 'fastify';
 
-import { createEmailQueue } from '../email/email.queue';
+import { createEmailQueue } from '@/modules/email/email.queue.js';
 import {
   emailTokenRepository,
   generateCode,
   generateToken,
   hashToken,
-} from '../email/email.repository';
-import { sessionRepository, userRepository } from './auth.repository';
-import { createLockoutService, formatLockoutTime } from './lockout.service';
-import { checkPasswordStrength, hashPassword, needsRehash, verifyPassword } from './utils/password';
+} from '@/modules/email/email.repository.js';
+import { sessionRepository, userRepository } from './auth.repository.js';
+import { createLockoutService, formatLockoutTime } from './lockout.service.js';
+import {
+  checkPasswordStrength,
+  hashPassword,
+  needsRehash,
+  verifyPassword,
+} from './utils/password.js';
 import {
   type AccessTokenPayload,
   generateRefreshToken,
   getRefreshTokenExpiry,
   hashRefreshToken,
   TOKEN_EXPIRY,
-} from './utils/token';
+} from './utils/token.js';
 
 /**
  * Token expiry for verification email (24 hours)

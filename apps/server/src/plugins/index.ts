@@ -2,4 +2,4 @@
  * Fastify plugins
  */
 
-export { default as errorHandler } from './error-handler';
+export { default as errorHandler } from './error-handler.js';

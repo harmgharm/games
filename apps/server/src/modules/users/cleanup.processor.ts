@@ -8,7 +8,7 @@ import { createLogger } from '@games/utils';
 import type { Worker } from 'bullmq';
 import { Queue, Worker as BullWorker } from 'bullmq';
 
-import { deletionService } from './deletion.service';
+import { deletionService } from './deletion.service.js';
 
 const log = createLogger('CleanupWorker');
 
@@ -18,9 +18,7 @@ const log = createLogger('CleanupWorker');
 async function processCleanupJob(): Promise<void> {
   log.info('Running cleanup job for expired username reservations...');
   const deletedCount = await deletionService.cleanupExpiredReservations();
-  log.info(
-    `Cleanup completed. Released ${deletedCount.toString()} expired username reservations.`,
-  );
+  log.info(`Cleanup completed. Released ${deletedCount.toString()} expired username reservations.`);
 }
 
 /**

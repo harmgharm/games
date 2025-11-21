@@ -10,8 +10,8 @@ import type { Database } from '@games/types';
 import { createLogger } from '@games/utils';
 import type { Kysely } from 'kysely';
 
-import { seedGameTypeConfigs } from './game-type-configs';
-import { seedRankTiers } from './rank-tiers';
+import { seedGameTypeConfigs } from './game-type-configs.js';
+import { seedRankTiers } from './rank-tiers.js';
 
 const log = createLogger('Seed');
 

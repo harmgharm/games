@@ -6,7 +6,7 @@
 
 import type { FastifyInstance } from 'fastify';
 
-import type { EmailJobData } from '../../plugins/queue.plugin';
+import type { EmailJobData } from '@/plugins/queue.plugin.js';
 
 /**
  * Email queue producer functions

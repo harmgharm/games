@@ -2,14 +2,14 @@ import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import Fastify, { type FastifyInstance } from 'fastify';
 
-import { API_PREFIX, env } from './config';
-import { authRoutes } from './modules/auth/auth.routes';
-import { emailRoutes } from './modules/email';
-import { usersRoutes } from './modules/users';
-import authPlugin from './plugins/auth.plugin';
-import errorHandler from './plugins/error-handler';
-import queuePlugin from './plugins/queue.plugin';
-import rateLimitPlugin, { AUTH_RATE_LIMITS } from './plugins/rate-limit.plugin';
+import { API_PREFIX, env } from '@/config/index.js';
+import { authRoutes } from '@/modules/auth/auth.routes.js';
+import { emailRoutes } from '@/modules/email/index.js';
+import { usersRoutes } from '@/modules/users/index.js';
+import authPlugin from '@/plugins/auth.plugin.js';
+import errorHandler from '@/plugins/error-handler.js';
+import queuePlugin from '@/plugins/queue.plugin.js';
+import rateLimitPlugin, { AUTH_RATE_LIMITS } from '@/plugins/rate-limit.plugin.js';
 
 /**
  * Create and configure Fastify server

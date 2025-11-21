@@ -7,7 +7,7 @@
 import type { NewSession, NewUser, Session, User } from '@games/types';
 import { sql } from 'kysely';
 
-import { db } from '../../db';
+import { db } from '@/db/index.js';
 
 /**
  * User queries

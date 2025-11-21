@@ -2,5 +2,5 @@
  * Config barrel export
  */
 
-export * from './constants';
-export * from './env';
+export * from './constants.js';
+export * from './env.js';

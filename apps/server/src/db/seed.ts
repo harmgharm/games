@@ -6,8 +6,8 @@
  *   pnpm db:seed:reset  - Reset and reseed
  */
 
-import { closeDatabase, db } from './client';
-import { resetAndSeed, runSeeds } from './seeds';
+import { closeDatabase, db } from './client.js';
+import { resetAndSeed, runSeeds } from './seeds/index.js';
 
 /**
  * Main CLI handler

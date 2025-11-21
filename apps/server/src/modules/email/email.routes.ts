@@ -13,11 +13,16 @@ import {
 } from '@games/validation';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 
-import { sendNoContent, sendSuccess } from '../../utils/response';
-import { userRepository } from '../auth/auth.repository';
-import { hashPassword } from '../auth/utils/password';
-import { createEmailQueue } from './email.queue';
-import { emailTokenRepository, generateCode, generateToken, hashToken } from './email.repository';
+import { sendNoContent, sendSuccess } from '@/utils/response.js';
+import { userRepository } from '@/modules/auth/auth.repository.js';
+import { hashPassword } from '@/modules/auth/utils/password.js';
+import { createEmailQueue } from './email.queue.js';
+import {
+  emailTokenRepository,
+  generateCode,
+  generateToken,
+  hashToken,
+} from './email.repository.js';
 
 /**
  * Token expiry times

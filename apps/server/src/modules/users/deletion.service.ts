@@ -8,10 +8,10 @@ import crypto from 'node:crypto';
 
 import { AppError } from '@games/types';
 
-import { withTransaction } from '../../db/transaction';
-import { verifyPassword } from '../auth/utils/password';
-import { deletionRepository } from './deletion.repository';
-import { usersRepository } from './users.repository';
+import { withTransaction } from '@/db/transaction.js';
+import { verifyPassword } from '@/modules/auth/utils/password.js';
+import { deletionRepository } from './deletion.repository.js';
+import { usersRepository } from './users.repository.js';
 
 const RESERVATION_DAYS = 30;
 

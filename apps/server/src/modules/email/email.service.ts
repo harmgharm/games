@@ -7,13 +7,13 @@
 import { createLogger } from '@games/utils';
 import { ServerClient } from 'postmark';
 
-import { env } from '../../config';
+import { env } from '@/config/index.js';
 import {
   accountRecoveryEmail,
   passwordResetEmail,
   verificationEmail,
   welcomeEmail,
-} from './email.templates';
+} from './email.templates.js';
 
 const log = createLogger('Email');
 

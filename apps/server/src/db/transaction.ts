@@ -7,7 +7,7 @@
 import type { Database } from '@games/types';
 import type { Transaction } from 'kysely';
 
-import { db } from './client';
+import { db } from './client.js';
 
 /**
  * Execute operations within a database transaction

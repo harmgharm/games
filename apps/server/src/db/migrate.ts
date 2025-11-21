@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url';
 
 import { FileMigrationProvider, Migrator } from 'kysely';
 
-import { closeDatabase, db } from './client';
+import { closeDatabase, db } from './client.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 

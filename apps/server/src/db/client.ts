@@ -9,7 +9,7 @@ import type { Database } from '@games/types';
 import { Kysely, PostgresDialect } from 'kysely';
 import pg from 'pg';
 
-import { env } from '../config';
+import { env } from '@/config/index.js';
 
 const { Pool } = pg;
 

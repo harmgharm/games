@@ -6,7 +6,7 @@
 
 import type { User, UserUpdate } from '@games/types';
 
-import { db } from '../../db/client';
+import { db } from '@/db/client.js';
 
 export const usersRepository = {
   /**

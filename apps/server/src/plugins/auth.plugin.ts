@@ -9,8 +9,8 @@ import fastifyJwt from '@fastify/jwt';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import fp from 'fastify-plugin';
 
-import { env } from '../config';
-import { db } from '../db';
+import { env } from '@/config/index.js';
+import { db } from '@/db/index.js';
 
 /**
  * Extend Fastify types for JWT

@@ -14,9 +14,9 @@
 
 import { createLogger } from '@games/utils';
 
-import { env } from './config';
-import { startEmailWorker } from './modules/email/email.processor';
-import { scheduleCleanupJob, startCleanupWorker } from './modules/users/cleanup.processor';
+import { env } from '@/config/index.js';
+import { startEmailWorker } from '@/modules/email/email.processor.js';
+import { scheduleCleanupJob, startCleanupWorker } from '@/modules/users/cleanup.processor.js';
 
 const log = createLogger('Worker');
 

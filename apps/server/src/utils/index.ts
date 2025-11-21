@@ -2,4 +2,4 @@
  * Server utility functions
  */
 
-export * from './response';
+export * from './response.js';

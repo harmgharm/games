@@ -5,11 +5,11 @@
  */
 
 // Client
-export { checkDatabaseConnection, closeDatabase, db } from './client';
+export { checkDatabaseConnection, closeDatabase, db } from './client.js';
 
 // Transactions
-export type { DatabaseTransaction } from './transaction';
-export { withTransaction } from './transaction';
+export type { DatabaseTransaction } from './transaction.js';
+export { withTransaction } from './transaction.js';
 
 // Queries
-export * from './queries';
+export * from './queries/index.js';

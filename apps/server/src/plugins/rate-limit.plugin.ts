@@ -9,7 +9,7 @@ import type { FastifyInstance } from 'fastify';
 import fp from 'fastify-plugin';
 import Redis from 'ioredis';
 
-import { env } from '../config';
+import { env } from '@/config/index.js';
 
 /**
  * Rate limit configurations for auth routes

@@ -5,5 +5,5 @@
  * These are type-safe Kysely query builders.
  */
 
-export * from './leaderboard';
-export * from './match-history';
+export * from './leaderboard.js';
+export * from './match-history.js';
