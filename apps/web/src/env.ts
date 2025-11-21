@@ -23,8 +23,8 @@ export const env = createEnv({
     VITE_APP_ENV: z.enum(['development', 'staging', 'production']).default('development'),
     VITE_ENABLE_ANALYTICS: z
       .enum(['true', 'false'])
-      .transform((value) => value === 'true')
-      .default('false'),
+      .default('false')
+      .transform((value) => value === 'true'),
   },
 
   /**
