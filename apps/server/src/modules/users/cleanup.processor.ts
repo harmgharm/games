@@ -18,7 +18,9 @@ const log = createLogger('CleanupWorker');
 async function processCleanupJob(): Promise<void> {
   log.info('Running cleanup job for expired username reservations...');
   const deletedCount = await deletionService.cleanupExpiredReservations();
-  log.info(`Cleanup completed. Released ${deletedCount} expired username reservations.`);
+  log.info(
+    `Cleanup completed. Released ${deletedCount.toString()} expired username reservations.`,
+  );
 }
 
 /**

@@ -4,15 +4,12 @@
  * Handles account deletion and recovery with username reservation.
  */
 
-import { nanoid } from 'nanoid';
 import crypto from 'node:crypto';
 
 import { AppError } from '@games/types';
 
-import { db } from '../../db/client';
 import { withTransaction } from '../../db/transaction';
 import { verifyPassword } from '../auth/utils/password';
-import { authRepository } from '../auth/auth.repository';
 import { deletionRepository } from './deletion.repository';
 import { usersRepository } from './users.repository';
 
@@ -32,7 +29,7 @@ export const deletionService = {
       // 1. Get user and verify password
       const user = await usersRepository.findById(userId);
 
-      if (!user) {
+      if (user === undefined) {
         throw new AppError('User not found', 'USER_NOT_FOUND', 404, true);
       }
 
@@ -47,7 +44,8 @@ export const deletionService = {
       }
 
       // 2. Generate anonymized data
-      const anonymizedUsername = `deleted_${nanoid(8)}`;
+      const randomId = crypto.randomBytes(4).toString('hex'); // 8 hex chars
+      const anonymizedUsername = `deleted_${randomId}`;
       const anonymizedEmail = `deleted_${user.id}@anonymized.local`;
 
       // 3. Hash original email for recovery verification
@@ -120,7 +118,7 @@ export const deletionService = {
       // 2. Find reservation by email hash
       const reservation = await deletionRepository.findReservationByEmailHash(emailHash);
 
-      if (!reservation) {
+      if (reservation === undefined) {
         throw new AppError(
           'No recovery found or recovery period expired',
           'RECOVERY_NOT_FOUND',
@@ -132,7 +130,7 @@ export const deletionService = {
       // 3. Get user
       const user = await usersRepository.findById(reservation.user_id);
 
-      if (!user) {
+      if (user === undefined) {
         throw new AppError('User not found', 'USER_NOT_FOUND', 404, true);
       }
 

@@ -12,19 +12,19 @@ export const deletionRepository = {
   /**
    * Reserve a username for a specified duration
    */
-  async reserveUsername(
-    username: string,
-    userId: string,
-    emailHash: Buffer,
-    daysToReserve: number,
-  ): Promise<ReservedUsername> {
+  async reserveUsername(options: {
+    username: string;
+    userId: string;
+    emailHash: Buffer;
+    daysToReserve: number;
+  }): Promise<ReservedUsername> {
     const reservedUntil = new Date();
-    reservedUntil.setDate(reservedUntil.getDate() + daysToReserve);
+    reservedUntil.setDate(reservedUntil.getDate() + options.daysToReserve);
 
     const reservation: NewReservedUsername = {
-      username: username.toLowerCase(),
-      user_id: userId,
-      original_email_hash: emailHash,
+      username: options.username.toLowerCase(),
+      user_id: options.userId,
+      original_email_hash: options.emailHash,
       reserved_until: reservedUntil,
     };
 
@@ -90,6 +90,6 @@ export const deletionRepository = {
       .where('reserved_until', '<', new Date())
       .executeTakeFirst();
 
-    return Number(result.numDeletedRows ?? 0);
+    return Number(result.numDeletedRows);
   },
 };
