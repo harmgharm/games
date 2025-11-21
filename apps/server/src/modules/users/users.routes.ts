@@ -4,9 +4,16 @@
  * API endpoints for user profiles and search.
  */
 
-import { searchUsersSchema, updateProfileSchema } from '@games/validation';
+import {
+  deleteAccountSchema,
+  recoverAccountSchema,
+  searchUsersSchema,
+  updateProfileSchema,
+} from '@games/validation';
 import type { FastifyInstance } from 'fastify';
 
+import { sendAccountRecoveryEmail } from '../email/email.service';
+import * as deletionService from './deletion.service';
 import * as usersService from './users.service';
 
 /**
@@ -49,6 +56,33 @@ export async function usersRoutes(fastify: FastifyInstance): Promise<void> {
   });
 
   /**
+   * DELETE /api/v1/users/me - Delete own account
+   */
+  fastify.delete('/me', {
+    onRequest: [fastify.authenticate],
+    handler: async (request, reply) => {
+      const userId = request.user.userId;
+      const input = deleteAccountSchema.parse(request.body);
+
+      await deletionService.deleteAccount(userId, input.password);
+
+      // Revoke the current session by clearing the cookie
+      void reply.clearCookie('refresh_token', {
+        path: '/api/v1/auth',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+      });
+
+      return {
+        data: { message: 'Account deleted successfully' },
+        error: null,
+        meta: { timestamp: new Date().toISOString() },
+      };
+    },
+  });
+
+  /**
    * GET /api/v1/users/search - Search users
    */
   fastify.get('/search', {
@@ -58,6 +92,33 @@ export async function usersRoutes(fastify: FastifyInstance): Promise<void> {
 
       return {
         data: result,
+        error: null,
+        meta: { timestamp: new Date().toISOString() },
+      };
+    },
+  });
+
+  /**
+   * POST /api/v1/users/recover - Recover deleted account
+   */
+  fastify.post('/recover', {
+    handler: async (request) => {
+      const input = recoverAccountSchema.parse(request.body);
+      const result = await deletionService.recoverAccount(input.email, input.password);
+
+      // Get recovered user for email
+      const user = await usersService.getOwnProfile(result.userId);
+
+      // Send recovery confirmation email
+      await sendAccountRecoveryEmail(input.email, {
+        username: user.username,
+      });
+
+      return {
+        data: {
+          message: 'Account recovered successfully',
+          userId: result.userId,
+        },
         error: null,
         meta: { timestamp: new Date().toISOString() },
       };

@@ -87,17 +87,34 @@ export const usersRepository = {
 
   /**
    * Check if username is available
+   * Excludes soft-deleted users and checks reserved_usernames table
    */
   async isUsernameAvailable(username: string, excludeUserId?: string): Promise<boolean> {
-    const query = db
+    // Check if username exists in active users (exclude soft-deleted)
+    let userQuery = db
       .selectFrom('users')
       .select('id')
-      .where('username', '=', username.toLowerCase());
+      .where('username', '=', username.toLowerCase())
+      .where('deleted_at', 'is', null);
 
-    const result = excludeUserId
-      ? await query.where('id', '!=', excludeUserId).executeTakeFirst()
-      : await query.executeTakeFirst();
+    if (excludeUserId) {
+      userQuery = userQuery.where('id', '!=', excludeUserId);
+    }
 
-    return result === undefined;
+    const userExists = await userQuery.executeTakeFirst();
+
+    if (userExists) {
+      return false;
+    }
+
+    // Check if username is reserved
+    const reserved = await db
+      .selectFrom('reserved_usernames')
+      .select('id')
+      .where('username', '=', username.toLowerCase())
+      .where('reserved_until', '>', new Date())
+      .executeTakeFirst();
+
+    return reserved === undefined;
   },
 };

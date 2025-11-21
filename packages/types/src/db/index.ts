@@ -18,7 +18,13 @@ export * from './notifications';
 
 // Import table types for Database interface
 import type { RankTiersTable, GameTypeConfigsTable } from './lookup';
-import type { UsersTable, UserEloTable, SessionsTable, EmailTokensTable } from './users';
+import type {
+  UsersTable,
+  UserEloTable,
+  SessionsTable,
+  EmailTokensTable,
+  ReservedUsernamesTable,
+} from './users';
 import type { GamesTable, GameParticipantsTable, MatchmakingQueueTable } from './games';
 import type { FriendshipsTable, BlocksTable, MutesTable } from './social';
 import type { ConversationsTable, ConversationParticipantsTable, MessagesTable } from './chat';
@@ -44,6 +50,7 @@ export interface Database {
   user_elo: UserEloTable;
   sessions: SessionsTable;
   email_tokens: EmailTokensTable;
+  reserved_usernames: ReservedUsernamesTable;
 
   // Games
   games: GamesTable;

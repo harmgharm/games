@@ -90,3 +90,20 @@ export interface EmailTokensTable {
 export type EmailToken = Selectable<EmailTokensTable>;
 export type NewEmailToken = Insertable<EmailTokensTable>;
 export type EmailTokenUpdate = Updateable<EmailTokensTable>;
+
+// ============================================
+// RESERVED USERNAMES
+// ============================================
+
+export interface ReservedUsernamesTable {
+  id: Generated<string>;
+  username: string; // unique - the original username being held
+  user_id: string; // FK -> users
+  original_email_hash: Buffer; // SHA-256 hash for recovery verification
+  reserved_until: Date; // expiry date (deletion + 30 days)
+  created_at: Generated<Date>;
+}
+
+export type ReservedUsername = Selectable<ReservedUsernamesTable>;
+export type NewReservedUsername = Insertable<ReservedUsernamesTable>;
+export type ReservedUsernameUpdate = Updateable<ReservedUsernamesTable>;

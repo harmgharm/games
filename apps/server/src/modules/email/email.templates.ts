@@ -170,3 +170,38 @@ export function welcomeEmail(data: { username: string; loginUrl: string }): {
     html: baseLayout(content),
   };
 }
+
+/**
+ * Account recovery confirmation email template
+ */
+export function accountRecoveryEmail(data: { username: string; loginUrl: string }): {
+  subject: string;
+  html: string;
+} {
+  const content = `
+    <h2>Account Recovered Successfully</h2>
+    <p>Hi ${data.username},</p>
+    <p>Your account has been successfully recovered and is now active again.</p>
+
+    <p>All your data, including your:</p>
+    <ul>
+      <li>Match history and statistics</li>
+      <li>Friends and social connections</li>
+      <li>Achievements and rankings</li>
+    </ul>
+
+    <p>has been restored.</p>
+
+    <p><a href="${data.loginUrl}" class="button">Log In</a></p>
+
+    <p class="muted">If you didn't request this recovery, please contact support immediately.</p>
+
+    <p>Welcome back!</p>
+    <p>The Gaming Platform Team</p>
+  `;
+
+  return {
+    subject: 'Account Recovered Successfully',
+    html: baseLayout(content),
+  };
+}

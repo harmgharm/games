@@ -8,7 +8,12 @@ import { createLogger } from '@games/utils';
 import { ServerClient } from 'postmark';
 
 import { env } from '../../config';
-import { passwordResetEmail, verificationEmail, welcomeEmail } from './email.templates';
+import {
+  accountRecoveryEmail,
+  passwordResetEmail,
+  verificationEmail,
+  welcomeEmail,
+} from './email.templates';
 
 const log = createLogger('Email');
 
@@ -103,6 +108,24 @@ export async function sendWelcomeEmail(
 ): Promise<void> {
   const loginUrl = `${env.APP_URL}/dashboard`;
   const email = welcomeEmail({
+    username: data.username,
+    loginUrl,
+  });
+
+  await sendEmail(to, email.subject, email.html);
+}
+
+/**
+ * Send account recovery confirmation email
+ */
+export async function sendAccountRecoveryEmail(
+  to: string,
+  data: {
+    username: string;
+  },
+): Promise<void> {
+  const loginUrl = `${env.APP_URL}/login`;
+  const email = accountRecoveryEmail({
     username: data.username,
     loginUrl,
   });
